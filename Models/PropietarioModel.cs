@@ -18,5 +18,10 @@ namespace StiegerModels
             this.Apellido=apellido;
             this.telefono=telefono;
         }
+
+        public override string ToString()
+    {
+        return $"{Nombre} {Apellido}, dni: {Dni}";
+    }
     }
 }

@@ -1,9 +1,19 @@
 using StiegerModels;
 
-PropietarioModel p=new PropietarioModel("dni","nombre","apellido","telefono");
+PropietarioModel a=new PropietarioModel("44359371","ricardo","malardo","266469420");
 RepositorioPropietario repoP=new RepositorioPropietario();
-repoP.Alta(p);
+/*repoP.Alta(a);
+repoP.Baja(b);
+PropietarioModel b= repoP.TraerId(4);
+PropietarioModel c= repoP.TraerId(6);
+c.Apellido="vizcay";
+repoP.Modificacion(c);*/
+var lista=repoP.TraerTodos();
 
+foreach (var item in lista)
+{
+    Console.WriteLine(item.ToString());
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
