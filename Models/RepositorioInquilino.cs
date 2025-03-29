@@ -25,14 +25,14 @@ namespace StiegerModels
             return id;
         }
 
-        public int Baja(InquilinoModel i)
+        public int Baja(int id)
         {
             this.abrirConexion();
             int columnasAfectadas = -1;
-            string sql = @"DELETE FROM `inquilino` WHERE `id_inquilino`=@id;";
+            string sql = @"UPDATE `inquilino` SET `activo` = '0' WHERE `id_inquilino` = @id;";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-            comando.Parameters.AddWithValue("@id", i.Id_inquilino);
+            comando.Parameters.AddWithValue("@id", id);
             comando.CommandType = CommandType.Text;
             columnasAfectadas = Convert.ToInt32(comando.ExecuteNonQuery());
 
@@ -90,7 +90,6 @@ namespace StiegerModels
             return inquilinos;
         }
 
-        //SELECT `id_inquilino`, `dni`, `nombre`, `apellido`, `contacto` FROM `inquilino` WHERE `id_inquilino`=@id
         public InquilinoModel TraerId(int id)
         {
             this.abrirConexion();

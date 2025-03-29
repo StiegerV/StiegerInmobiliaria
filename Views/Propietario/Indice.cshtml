@@ -1,0 +1,52 @@
+<h1 style="display:none;">me escuendi </h1>
+@model IEnumerable<StiegerModels.PropietarioModel>
+
+@{
+    ViewBag.Title = "Lista Propietarios";
+    var mensaje = TempData["Mensaje"];
+    if (mensaje != null)
+    {
+        <div class="alert alert-success">
+            @mensaje
+        </div>
+    }
+}
+
+<h1>lista de propietarios</h1>
+<table class="tabla">
+    <button class="btn-nuevo">Nuevo</button>
+    @foreach (var p in Model)
+    {
+
+        <tr>
+            <td>
+                Identificador: @p.Id_propietario
+            </td>
+            <td>
+                Dni: @p.Dni
+            </td>
+            <td>
+                Nombre: @p.Nombre @p.Apellido
+            </td>
+            <td>
+                @p.telefono
+            </td>
+            <td>
+                <form action="@Url.Action("Editar","Propietario")" method="post">
+                    <input type="hidden" name="id" value="@p.Id_propietario" />
+                    <button type="submit" class="btn-editar">Editar</button>
+
+                </form>
+
+                <form action="@Url.Action("Eliminar", "Propietario")" method="post">
+                    <input type="hidden" name="id" value="@p.Id_propietario" />
+                    <button type="submit" class="botonEliminar">Eliminar</button>
+                </form>
+            </td>
+
+
+
+        </tr>
+
+    }
+</table>

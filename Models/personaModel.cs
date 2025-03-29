@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Name
 {
-    class personaModel
+   public class personaModel
     {
         [Required]
         public string Dni { get; set; }

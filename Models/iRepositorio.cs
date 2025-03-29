@@ -1,18 +1,19 @@
 namespace StiegerModels
 {
     // <T> indica que es una interfaz generica que puede recibir varios tipos de objetos
-    interface iRepositorio<T>
+
+   public interface iRepositorio<T>
     {
-        public int Alta(T p);
+        int Alta(T p);
 
-        public int Baja(T p);
+        int Baja(int id);
 
-        public int Modificacion(T p);
+        int Modificacion(T p);
 
-        public List<T> TraerTodos();
+        List<T> TraerTodos();
 
 
-        public T TraerId(int id);
+        T TraerId(int id);
 
     }
 }

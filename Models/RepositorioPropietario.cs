@@ -27,14 +27,16 @@ namespace StiegerModels
             return id;
         }
 
-        public int Baja(PropietarioModel p)
+/**/
+        public int Baja(int id)
         {
             this.abrirConexion();
             int columnasAfectadas = -1;
-            string sql = @"DELETE FROM `propietario` WHERE `id_propietario`=@id;";
+            string sql = @"UPDATE `propietario` SET activo=0 
+                            WHERE `id_propietario`=@id";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-            comando.Parameters.AddWithValue("@id", p.Id_propietario);
+            comando.Parameters.AddWithValue("@id", id);
             comando.CommandType = CommandType.Text;
             columnasAfectadas = Convert.ToInt32(comando.ExecuteNonQuery());
 
@@ -70,7 +72,7 @@ namespace StiegerModels
             List<PropietarioModel> propietarios = new List<PropietarioModel>();
 
             this.abrirConexion();
-            string sql = @"SELECT * FROM propietario";
+            string sql = @"SELECT * FROM propietario WHERE activo=1";
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.CommandType = CommandType.Text;
             var lector = comando.ExecuteReader();
@@ -96,7 +98,7 @@ namespace StiegerModels
         {
             this.abrirConexion();
             string sql = @"SELECT `id_propietario`, `dni`, `nombre`, `apellido`, `telefono` 
-                        FROM `propietario` WHERE `id_propietario`=@id";
+                        FROM `propietario` WHERE `id_propietario`=@id AND activo=1";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@id", id);

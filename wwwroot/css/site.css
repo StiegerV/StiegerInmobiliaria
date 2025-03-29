@@ -20,3 +20,181 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.tabla{
+  width: 100%;
+  border-collapse: collapse; /* Elimina el espacio entre celdas */
+  margin: 20px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para la tabla */
+  border-radius: 8px;
+  overflow: hidden; /* Esconde cualquier borde fuera del contorno */
+  border: 1px solid #ddd; /* Borde gris claro */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Sombra más intensa para la tabla */
+  th{
+    padding: 12px 15px; /* Espaciado interno */
+    text-align: left; /* Alineación a la izquierda */
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave debajo de los encabezados */
+  }
+  td{
+    padding: 12px 15px;
+    border: 1px solid #000; /* Borde negro */
+    text-align: left;
+    font-size: 14px;
+  }
+  tr:hover{
+    background-color: #ddd; /* Fondo gris claro al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más intensa al pasar el ratón */
+  }
+  td:last-child, .table th:last-child {
+    border-right: none; /* Elimina el borde derecho */
+}
+}
+
+.botonEliminar{
+
+  background-color: #d9534f; /* Rojo para eliminar */
+  color: white; /* Texto blanco */
+  border: 1px solid #c9302c; /* Borde rojo oscuro */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  text-align: center;
+  cursor: pointer; /* Manito al pasar el ratón */
+  border-radius: 4px; /* Bordes redondeados */
+  transition: background-color 0.3s, transform 0.2s; /* Transición para hover */
+}
+
+.botonEliminar:hover{
+  background-color: #c9302c; /* Rojo oscuro al pasar el ratón */
+  transform: scale(1.05); /* Efecto de agrandar ligeramente el botón */
+}
+
+.botonEliminar:active {
+  background-color: #ac2925; /* Rojo aún más oscuro cuando se presiona */
+  transform: scale(1); /* Restablece el tamaño cuando se presiona */
+}
+
+.btn-editar {
+  background-color: #5bc0de; /* Azul claro para editar */
+  color: white; /* Texto blanco */
+  border: 1px solid #31b0d5; /* Borde azul más oscuro */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  text-align: center;
+  cursor: pointer; /* Manito al pasar el ratón */
+  border-radius: 4px; /* Bordes redondeados */
+  transition: background-color 0.3s, transform 0.2s; /* Transición para hover */
+}
+
+/* Estilo cuando el botón se pasa el ratón por encima */
+.btn-editar:hover {
+  background-color: #31b0d5; /* Azul más oscuro al pasar el ratón */
+  transform: scale(1.05); /* Efecto de agrandar ligeramente el botón */
+}
+
+/* Estilo cuando el botón está presionado */
+.btn-editar:active {
+  background-color: #269abc; /* Azul aún más oscuro cuando se presiona */
+  transform: scale(1); /* Restablece el tamaño cuando se presiona */
+}
+
+.btn-nuevo {
+  background-color: #28a745; /* Verde para nueva acción */
+  color: white; /* Texto blanco */
+  border: 1px solid #218838; /* Borde verde más oscuro */
+  padding: 10px 20px; /* Espaciado interno */
+  font-size: 16px; /* Tamaño de fuente */
+  text-align: center;
+  cursor: pointer; /* Manito al pasar el ratón */
+  border-radius: 4px; /* Bordes redondeados */
+  transition: background-color 0.3s, transform 0.2s; /* Transición para hover */
+}
+
+/* Estilo cuando el botón se pasa el ratón por encima */
+.btn-nuevo:hover {
+  background-color: #218838; /* Verde más oscuro al pasar el ratón */
+  transform: scale(1.05); /* Efecto de agrandar ligeramente el botón */
+}
+
+/* Estilo cuando el botón está presionado */
+.btn-nuevo:active {
+  background-color: #1e7e34; /* Verde aún más oscuro cuando se presiona */
+  transform: scale(1); /* Restablece el tamaño cuando se presiona */
+}
+
+
+/* Contenedor principal del formulario */
+.formulario-editar {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 30px auto;
+}
+
+/* Título del formulario */
+.formulario-editar h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Estilo para las etiquetas del formulario */
+.formulario-editar label {
+  font-size: 16px;
+  color: #555;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Estilo para los campos de entrada */
+.formulario-editar input[type="text"],
+.formulario-editar input[type="number"],
+.formulario-editar input[type="email"],
+.formulario-editar textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+/* Foco en los campos de entrada */
+.formulario-editar input[type="text"]:focus,
+.formulario-editar input[type="number"]:focus,
+.formulario-editar input[type="email"]:focus,
+.formulario-editar textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Estilo para el botón de submit */
+.formulario-editar button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+/* Cambio de color al pasar el ratón sobre el botón */
+.formulario-editar button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensaje de error */
+.formulario-editar .error {
+  color: #ff0000;
+  font-size: 14px;
+  margin-bottom: 10px;
+}

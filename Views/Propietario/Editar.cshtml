@@ -1,0 +1,25 @@
+@model StiegerModels.PropietarioModel
+@{
+    ViewBag.Title = "Detalle";
+}
+
+<h1>Propietario</h1>
+
+<form action="@Url.Action("EditarPropietario", "Propietario")" method="post">
+
+    <input type="hidden" name="Id_propietario"  asp-for="Id_propietario" />
+
+    <label for="Dni">Dni</label>
+    <input type="text" id="Dni" asp-for="Dni" />
+
+    <label for="Nombre">Nombre</label>
+    <input type="text" id="Nombre" asp-for="Nombre" />
+
+    <label for="Apellido">Apellido</label>
+    <input type="text" id="Apellido" asp-for="Apellido" />
+
+    <label for="Telefono">Telefono</label>
+    <input type="text" id="Telefono" asp-for="telefono" />
+
+    <button type="submit">Guardar</button>
+</form>
