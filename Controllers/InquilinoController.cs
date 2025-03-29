@@ -3,22 +3,22 @@ using StiegerModels;
 
 namespace StiegerControllers
 {
-    public class PropietarioController : Controller
+    public class InquilinoController : Controller
     {
-        private readonly IrepositorioPropietario repositorio;
+        private readonly IrepositorioInquilino repositorio;
 
         //IrepositorioPropietario repositorio
-        public PropietarioController()
+        public InquilinoController()
         {
-            this.repositorio = new RepositorioPropietario();
+            this.repositorio = new RepositorioInquilino();
 
         }
 
         //el nombre del metodo es el que devuelve la vista
         public ActionResult Indice()
         {
-            var propietarios = repositorio.TraerTodos();
-            return View(propietarios);
+            var inquilinos = repositorio.TraerTodos();
+            return View(inquilinos);
         }
 
         [HttpPost]
@@ -27,12 +27,12 @@ namespace StiegerControllers
             try
             {
                 repositorio.Baja(id);
-                TempData["Mensaje"] = "Propietario eliminado exitosamente.";
+                TempData["Mensaje"] = "Inquilino eliminado exitosamente.";
                 return RedirectToAction("Indice");
             }
             catch (System.Exception)
             {
-                TempData["Mensaje"] = "Error al eliminar propietario.";
+                TempData["Mensaje"] = "Error al eliminar Inquilino.";
                 return RedirectToAction("Indice");
                 throw;
             }
@@ -41,17 +41,17 @@ namespace StiegerControllers
         [HttpPost]
         public ActionResult Editar(int id)
         {
-            var propietario = repositorio.TraerId(id);
+            var inquilino = repositorio.TraerId(id);
 
-            return View(propietario);
+            return View(inquilino);
         }
 
         [HttpPost]
-        public ActionResult EditarPropietario(PropietarioModel propietario)
+        public ActionResult EditarInquilino(InquilinoModel inquilino)
         {
-            int columnas = repositorio.Modificacion(propietario);
+            int columnas = repositorio.Modificacion(inquilino);
             Console.WriteLine(columnas);
-            Console.WriteLine(propietario.Id_propietario);
+            Console.WriteLine(inquilino.Id_inquilino);
             return RedirectToAction("indice");
         }
 
@@ -61,9 +61,9 @@ namespace StiegerControllers
         }
 
         [HttpPost]
-        public ActionResult NuevoPropietario(PropietarioModel propietario)
+        public ActionResult NuevoInquilino(InquilinoModel inquilino)
         {
-            repositorio.Alta(propietario);
+            repositorio.Alta(inquilino);
             return RedirectToAction("indice");
         }
     }

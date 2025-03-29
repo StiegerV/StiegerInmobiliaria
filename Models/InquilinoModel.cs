@@ -3,7 +3,7 @@ using Name;
 
 namespace StiegerModels
 {
-    class InquilinoModel : personaModel
+   public class InquilinoModel : personaModel
     {
         [Key]
         public int Id_inquilino { get; set; }

@@ -1,0 +1,26 @@
+@model StiegerModels.InquilinoModel
+@{
+    ViewBag.Title = "Detalle";
+}
+
+<h1>Nuevo Propietario</h1>
+
+<h1 style="display:none;">"accion" ,"controlador"  tienen que tener action o no funca</h1>
+<form class="formulario-editar" action="@Url.Action("NuevoInquilino", "Inquilino")" method="post">
+
+    <input type="hidden" name="Id_inquilino"  asp-for="Id_inquilino" />
+
+    <label for="Dni">Dni</label>
+    <input type="text" id="Dni" asp-for="Dni" required />
+
+    <label for="Nombre">Nombre</label>
+    <input type="text" id="Nombre" asp-for="Nombre" required />
+
+    <label for="Apellido">Apellido</label>
+    <input type="text" id="Apellido" asp-for="Apellido" required />
+
+    <label for="Telefono">Telefono</label>
+    <input type="text" id="Contacto" asp-for="Contacto" required />
+
+    <button type="submit">Guardar</button>
+</form>

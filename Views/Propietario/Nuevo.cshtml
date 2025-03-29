@@ -1,0 +1,26 @@
+@model StiegerModels.PropietarioModel
+@{
+    ViewBag.Title = "Detalle";
+}
+
+<h1>Nuevo Propietario</h1>
+
+<h1 style="display:none;">"accion" ,"controlador"  tienen que tener action o no funca</h1>
+<form class="formulario-editar" action="@Url.Action("NuevoPropietario", "Propietario")" method="post">
+
+    <input type="hidden" name="Id_propietario"  asp-for="Id_propietario" />
+
+    <label for="Dni">Dni</label>
+    <input type="text" id="Dni" asp-for="Dni" required />
+
+    <label for="Nombre">Nombre</label>
+    <input type="text" id="Nombre" asp-for="Nombre" required />
+
+    <label for="Apellido">Apellido</label>
+    <input type="text" id="Apellido" asp-for="Apellido" required />
+
+    <label for="Telefono">Telefono</label>
+    <input type="text" id="Telefono" asp-for="telefono" required />
+
+    <button type="submit">Guardar</button>
+</form>

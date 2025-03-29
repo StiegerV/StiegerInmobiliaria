@@ -1,8 +1,8 @@
 <h1 style="display:none;">me escuendi </h1>
-@model IEnumerable<StiegerModels.PropietarioModel>
+@model IEnumerable<StiegerModels.InquilinoModel>
 
 @{
-    ViewBag.Title = "Lista Propietarios";
+    ViewBag.Title = "Lista Inquilinos";
     var mensaje = TempData["Mensaje"];
     if (mensaje != null)
     {
@@ -12,36 +12,36 @@
     }
 }
 
-<h1>lista de propietarios</h1>
+<h1>lista de inquilinos</h1>
 <table class="tabla">
-    <a href="@Url.Action("Nuevo", "Propietario")">
+    <a href="@Url.Action("Nuevo", "Inquilino")">
         <button class="btn-nuevo">Nuevo</button>
     </a>
-    @foreach (var p in Model)
+    @foreach (var i in Model)
     {
 
         <tr>
             <td>
-                Identificador: @p.Id_propietario
+                Identificador: @i.Id_inquilino
             </td>
             <td>
-                Dni: @p.Dni
+                Dni: @i.Dni
             </td>
             <td>
-                Nombre: @p.Nombre @p.Apellido
+                Nombre: @i.Nombre @i.Apellido
             </td>
             <td>
-                @p.telefono
+                @i.Contacto
             </td>
             <td style="display: flex; -ms-flex-align: center;">
-                <form action="@Url.Action("Editar","Propietario")" method="post">
-                    <input type="hidden" name="id" value="@p.Id_propietario" />
+                <form action="@Url.Action("Editar","Inquilino")" method="post">
+                    <input type="hidden" name="id" value="@i.Id_inquilino" />
                     <button type="submit" class="btn-editar">Editar</button>
 
                 </form>
 
-                <form action="@Url.Action("Eliminar", "Propietario")" method="post">
-                    <input type="hidden" name="id" value="@p.Id_propietario" />
+                <form action="@Url.Action("Eliminar", "Inquilino")" method="post">
+                    <input type="hidden" name="id" value="@i.Id_inquilino" />
                     <button type="submit" class="botonEliminar">Eliminar</button>
                 </form>
             </td>

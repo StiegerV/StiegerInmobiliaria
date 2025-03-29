@@ -69,7 +69,7 @@ namespace StiegerModels
             List<InquilinoModel> inquilinos = new List<InquilinoModel>();
 
             this.abrirConexion();
-            string sql = @"SELECT * FROM inquilino";
+            string sql = @"SELECT * FROM inquilino WHERE `activo` = '1' ";
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.CommandType = CommandType.Text;
             var lector = comando.ExecuteReader();
@@ -94,7 +94,7 @@ namespace StiegerModels
         {
             this.abrirConexion();
             string sql = @"SELECT `id_inquilino`, `dni`, `nombre`, `apellido`, `contacto` 
-                        FROM `inquilino` WHERE `id_inquilino`=@id";
+                        FROM `inquilino` WHERE `id_inquilino`=@id AND activo='1'";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@id", id);
