@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Name;
 
 namespace StiegerModels
 {
@@ -8,25 +7,24 @@ namespace StiegerModels
         [Key]
         public int Id_propietario { get; set; }
 
-        [Required]
-        public string telefono { get; set; }
-
         public PropietarioModel() { }
-        public PropietarioModel(int id, string dni, string nombre, string apellido, string telefono)
+        public PropietarioModel(int id, string dni, string nombre, string apellido, string telefono,string mail)
         {
             this.Id_propietario = id;
             this.Dni = dni;
             this.Nombre = nombre;
             this.Apellido = apellido;
-            this.telefono = telefono;
+            this.Telefono = telefono;
+            this.Mail=mail;
         }
         public PropietarioModel(string dni, string nombre, string apellido, string telefono)
         {
             this.Dni = dni;
             this.Nombre = nombre;
             this.Apellido = apellido;
-            this.telefono = telefono;
+            this.Telefono = telefono;
         }
+
 
         public override string ToString()
         {

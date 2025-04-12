@@ -1,20 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Name
+namespace StiegerModels
 {
    public class personaModel
     {
         [Required]
-        public string Dni { get; set; }
+        public string Dni { get; set; }= string.Empty;
 
         [Required]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; }= string.Empty;
 
 
         [Required]
-        public string Apellido { get; set; }
+        public string Apellido { get; set; }= string.Empty;
 
-        [Required]
-        public string Contacto { get; set; }
+        
+        public string Telefono { get; set; }= string.Empty;
+
+        public string Mail { get; set; }= string.Empty;
     }
 }

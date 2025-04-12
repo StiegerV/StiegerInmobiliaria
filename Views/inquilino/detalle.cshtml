@@ -1,0 +1,33 @@
+@model InquilinoModel
+<form action="@Url.Action("Eliminar", "Inquilino")" method="post" style="display:inline;">
+    <input type="hidden" name="id" value="@Model.Id_inquilino" />
+    <button type="submit" class="btn btn-danger btn-sm rounded"
+        onclick="return confirm('¿Eliminar al inquilino?')">Eliminar</button>
+</form>
+
+<a href="@Url.Action("NuevoEditar", "Inquilino", new { id = Model.Id_inquilino })">
+    <button class="btn btn-warning btn-sm rounded">Editar</button>
+</a>
+
+<table class="table table-bordered table-striped table-hover bg-white text-dark rounded mt-3">
+    <thead class="table-dark rounded-top">
+        <tr>
+            <th>Identificador</th>
+            <th>DNI</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Teléfono</th>
+            <th>Mail</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Id_inquilino</td>
+            <td>@Model.Dni</td>
+            <td>@Model.Nombre</td>
+            <td>@Model.Apellido</td>
+            <td>@Model.Telefono</td>
+            <td>@Model.Mail</td>
+        </tr>
+    </tbody>
+</table>

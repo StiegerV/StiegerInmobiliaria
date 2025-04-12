@@ -11,7 +11,6 @@ namespace StiegerControllers
         public InquilinoController()
         {
             this.repositorio = new RepositorioInquilino();
-
         }
 
         //el nombre del metodo es el que devuelve la vista
@@ -38,33 +37,41 @@ namespace StiegerControllers
             }
         }
 
-        [HttpPost]
-        public ActionResult Editar(int id)
+        public ActionResult NuevoEditar(int id)
         {
-            var inquilino = repositorio.TraerId(id);
-
+            InquilinoModel inquilino;
+            if (id > 0)
+            {
+                inquilino = repositorio.TraerId(id);
+            }
+            else
+            {
+                inquilino = new InquilinoModel();
+            }
+            Console.WriteLine(inquilino);
             return View(inquilino);
-        }
-
-        [HttpPost]
-        public ActionResult EditarInquilino(InquilinoModel inquilino)
-        {
-            int columnas = repositorio.Modificacion(inquilino);
-            Console.WriteLine(columnas);
-            Console.WriteLine(inquilino.Id_inquilino);
-            return RedirectToAction("indice");
-        }
-
-        public ActionResult Nuevo()
-        {
-            return View();
         }
 
         [HttpPost]
         public ActionResult NuevoInquilino(InquilinoModel inquilino)
         {
+            Console.WriteLine(inquilino.Id_inquilino);
             repositorio.Alta(inquilino);
             return RedirectToAction("indice");
+        }
+
+        [HttpPost]
+        public ActionResult EditarInquilino(InquilinoModel inquilino)
+        {
+            Console.WriteLine(inquilino.Id_inquilino);
+            repositorio.Modificacion(inquilino);
+            return RedirectToAction("indice");
+        }
+
+        public ActionResult Detalle(int id)
+        {
+              InquilinoModel inquilino = repositorio.TraerId(id);
+            return View(inquilino);
         }
     }
 }

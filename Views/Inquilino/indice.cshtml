@@ -1,54 +1,40 @@
-<h1 style="display:none;">me escuendi </h1>
-@model IEnumerable<StiegerModels.InquilinoModel>
-
-@{
-    ViewBag.Title = "Lista Inquilinos";
-    var mensaje = TempData["Mensaje"];
-    if (mensaje != null)
-    {
-        <div class="alert alert-success">
-            @mensaje
-        </div>
-    }
-}
-
-<h1>lista de inquilinos</h1>
-<table class="tabla">
-    <a href="@Url.Action("Nuevo", "Inquilino")">
-        <button class="btn-nuevo">Nuevo</button>
-    </a>
-    @foreach (var i in Model)
-    {
-
+@model IEnumerable<InquilinoModel>
+<table class="table table-bordered table-striped table-hover bg-white text-dark">
+    <thead class="table-dark">
         <tr>
-            <td>
-                Identificador: @i.Id_inquilino
-            </td>
-            <td>
-                Dni: @i.Dni
-            </td>
-            <td>
-                Nombre: @i.Nombre @i.Apellido
-            </td>
-            <td>
-                @i.Contacto
-            </td>
-            <td style="display: flex; -ms-flex-align: center;">
-                <form action="@Url.Action("Editar","Inquilino")" method="post">
-                    <input type="hidden" name="id" value="@i.Id_inquilino" />
-                    <button type="submit" class="btn-editar">Editar</button>
-
-                </form>
-
-                <form action="@Url.Action("Eliminar", "Inquilino")" method="post">
-                    <input type="hidden" name="id" value="@i.Id_inquilino" />
-                    <button type="submit" class="botonEliminar">Eliminar</button>
-                </form>
-            </td>
-
-
-
+            <th>Identificador</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>
+                <a href="@Url.Action("NuevoEditar", "Inquilino", new { id = 0 })">
+                    <button class="btn btn-success btn-sm">Nuevo</button>
+                </a>
+            </th>
         </tr>
+    </thead>
+    <tbody>
+        @foreach (var inquilino in Model)
+        {
+            <tr>
+                <td>@inquilino.Id_inquilino</td>
+                <td>@inquilino.Nombre</td>
+                <td>@inquilino.Apellido</td>
+                <td>
+                    <form action="@Url.Action("Eliminar", "Inquilino")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@inquilino.Id_inquilino" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('eliminar al inquilino?')">Eliminar</button>
+                    </form>
 
-    }
+                    <a href="@Url.Action("NuevoEditar", "Inquilino", new { id = inquilino.Id_inquilino })">
+                        <button class="btn btn-warning btn-sm">Editar</button>
+                    </a>
+
+                    <a href="@Url.Action("Detalle", "Inquilino", new { id = inquilino.Id_inquilino })">
+                        <button class="btn btn-primary btn-sm">Detalle</button>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>

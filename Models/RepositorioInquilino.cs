@@ -1,5 +1,6 @@
-using MySql.Data.MySqlClient;
 using System.Data;
+using MySql.Data.MySqlClient;
+
 namespace StiegerModels
 {
     class RepositorioInquilino : Conexion, IrepositorioInquilino
@@ -8,15 +9,16 @@ namespace StiegerModels
         {
             this.abrirConexion();
             int id = -1;
-            string sql = @"INSERT INTO `inquilino`(`dni`, `nombre`, `apellido`, `contacto`)
-                 VALUES (@dni,@nombre,@apellido,@contacto);
+            string sql =
+                @"INSERT INTO `inquilino`(`dni`, `nombre`, `apellido`, `telefono`, `mail`) VALUES (@dni,@nombre,@apellido,@telefono,@mail);
                SELECT LAST_INSERT_ID();";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@dni", i.Dni);
             comando.Parameters.AddWithValue("@nombre", i.Nombre);
             comando.Parameters.AddWithValue("@apellido", i.Apellido);
-            comando.Parameters.AddWithValue("@contacto", i.Contacto);
+            comando.Parameters.AddWithValue("@telefono", i.Telefono);
+            comando.Parameters.AddWithValue("@mail", i.Mail);
             comando.CommandType = CommandType.Text;
             id = Convert.ToInt32(comando.ExecuteScalar());
             i.Id_inquilino = id;
@@ -39,22 +41,22 @@ namespace StiegerModels
             this.cerrarConexion();
 
             return columnasAfectadas;
-
         }
-
 
         public int Modificacion(InquilinoModel i)
         {
             this.abrirConexion();
             int columnasAfectadas = -1;
-            string sql = @"UPDATE `inquilino` SET`dni`=@dni,`nombre`=@nombre,`apellido`=@apellido,`contacto`=@contacto
-                            WHERE `id_inquilino`=@id";
+            string sql =
+                @"UPDATE `inquilino` SET `dni`=@dni ,`nombre`=@nombre,`apellido`=@apellido,`telefono`=@telefono,`mail`=@mail
+                 WHERE `id_inquilino`=@id";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@dni", i.Dni);
             comando.Parameters.AddWithValue("@nombre", i.Nombre);
             comando.Parameters.AddWithValue("@apellido", i.Apellido);
-            comando.Parameters.AddWithValue("@contacto", i.Contacto);
+            comando.Parameters.AddWithValue("@telefono", i.Telefono);
+            comando.Parameters.AddWithValue("@mail", i.Mail);
             comando.Parameters.AddWithValue("@id", i.Id_inquilino);
             comando.CommandType = CommandType.Text;
             columnasAfectadas = Convert.ToInt32(comando.ExecuteNonQuery());
@@ -80,12 +82,11 @@ namespace StiegerModels
                 i.Dni = lector.GetString("dni");
                 i.Nombre = lector.GetString("nombre");
                 i.Apellido = lector.GetString("apellido");
-                i.Contacto = lector.GetString("contacto");
-
+                i.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
+                i.Mail = lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
                 inquilinos.Add(i);
             }
             this.cerrarConexion();
-
 
             return inquilinos;
         }
@@ -93,7 +94,8 @@ namespace StiegerModels
         public InquilinoModel TraerId(int id)
         {
             this.abrirConexion();
-            string sql = @"SELECT `id_inquilino`, `dni`, `nombre`, `apellido`, `contacto` 
+            string sql =
+                @"SELECT `id_inquilino`, `dni`, `nombre`, `apellido`, `telefono`,`mail`  
                         FROM `inquilino` WHERE `id_inquilino`=@id AND activo='1'";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
@@ -108,10 +110,13 @@ namespace StiegerModels
                 i.Dni = lector.GetString("dni");
                 i.Nombre = lector.GetString("nombre");
                 i.Apellido = lector.GetString("apellido");
-                i.Contacto = lector.GetString("contacto");
+                i.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
+                i.Mail = lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
             }
             else
-            { i.Id_inquilino = -1; }
+            {
+                i.Id_inquilino = -1;
+            }
             this.cerrarConexion();
 
             return i;

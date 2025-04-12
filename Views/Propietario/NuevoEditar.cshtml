@@ -1,0 +1,61 @@
+@model PropietarioModel
+
+
+
+@if (Model.Id_propietario > 0)
+{
+    <form action="@Url.Action("EditarPropietario", "Propietario")" method="post" class="container mt-4">
+        
+
+        <input type="hidden" name="Id_inquilino" id="Id_inquilino" value="@Model.Id_propietario">
+
+        <div class="mb-3">
+            <label for="Dni" class="form-label">Dni</label>
+            <input type="text" class="form-control" name="Dni" id="Dni" value="@Model.Dni" required>
+        </div>
+        <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="Nombre" id="Nombre" value="@Model.Nombre" required>
+        </div>
+        <div class="mb-3">
+            <label for="Apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" name="Apellido" id="Apellido" value="@Model.Apellido" required>
+        </div>
+        <div class="mb-3">
+            <label for="Telefono" class="form-label">Telefono</label>
+            <input type="text" class="form-control" name="Telefono" id="Telefono" value="@Model.Telefono">
+        </div>
+        <div class="mb-3">
+            <label for="Mail" class="form-label">Mail</label>
+            <input type="email" class="form-control" name="Mail" id="Mail" value="@Model.Mail">
+        </div>
+        <button type="submit" class="btn btn-warning">Actualizar</button>
+    </form>
+}
+else
+{
+    <form action="@Url.Action("NuevoPropietario", "Propietario")" method="post" class="container mt-4">
+        
+        <div class="mb-3">
+            <label for="Dni" class="form-label">Dni</label>
+            <input type="text" class="form-control" name="Dni" id="Dni" required>
+        </div>
+        <div class="mb-3">
+            <label for="Nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" name="Nombre" id="Nombre" required>
+        </div>
+        <div class="mb-3">
+            <label for="Apellido" class="form-label">Apellido</label>
+            <input type="text" class="form-control" name="Apellido" id="Apellido" required>
+        </div>
+        <div class="mb-3">
+            <label for="Telefono" class="form-label">Telefono</label>
+            <input type="text" class="form-control" name="Telefono" id="Telefono">
+        </div>
+        <div class="mb-3">
+            <label for="Mail" class="form-label">Mail</label>
+            <input type="email" class="form-control" name="Mail" id="Mail">
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+    </form>
+}

@@ -15,15 +15,13 @@ namespace StiegerControllers
         }
 
         //el nombre del metodo es el que devuelve la vista
-        public ActionResult Indice()
-        {
+        public ActionResult Indice() {
             var propietarios = repositorio.TraerTodos();
             return View(propietarios);
         }
 
         [HttpPost]
-        public ActionResult Eliminar(int id)
-        {
+        public ActionResult Eliminar(int id){
             try
             {
                 repositorio.Baja(id);
@@ -38,33 +36,45 @@ namespace StiegerControllers
             }
         }
 
-        [HttpPost]
-        public ActionResult Editar(int id)
-        {
-            var propietario = repositorio.TraerId(id);
 
+        public ActionResult NuevoEditar(int id)
+        {
+            PropietarioModel propietario;
+            if (id > 0)
+            {
+                propietario = repositorio.TraerId(id);
+            }
+            else
+            {
+                propietario = new PropietarioModel();
+            }
+            Console.WriteLine(propietario);
             return View(propietario);
-        }
-
-        [HttpPost]
-        public ActionResult EditarPropietario(PropietarioModel propietario)
-        {
-            int columnas = repositorio.Modificacion(propietario);
-            Console.WriteLine(columnas);
-            Console.WriteLine(propietario.Id_propietario);
-            return RedirectToAction("indice");
-        }
-
-        public ActionResult Nuevo()
-        {
-            return View();
         }
 
         [HttpPost]
         public ActionResult NuevoPropietario(PropietarioModel propietario)
         {
+            Console.WriteLine(propietario.Id_propietario);
             repositorio.Alta(propietario);
             return RedirectToAction("indice");
         }
+
+
+        [HttpPost]
+        public ActionResult EditarPropietario(PropietarioModel propietario)
+        {
+            Console.WriteLine(propietario.Id_propietario);
+            repositorio.Modificacion(propietario);
+            return RedirectToAction("indice");
+        }
+
+        public ActionResult Detalle(int id)
+        {
+              PropietarioModel propietario = repositorio.TraerId(id);
+            return View(propietario);
+        }
+
+
     }
 }

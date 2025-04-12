@@ -10,15 +10,16 @@ namespace StiegerModels
         {
             this.abrirConexion();
             int id = -1;
-            string sql = @"INSERT INTO propietario(dni, nombre, apellido, telefono) 
-               VALUES (@dni, @nombre, @apellido, @telefono);
+            string sql = @"INSERT INTO propietario(dni, nombre, apellido, telefono,mail) 
+               VALUES (@dni, @nombre, @apellido, @telefono,@mail);
                SELECT LAST_INSERT_ID();";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@dni", p.Dni);
             comando.Parameters.AddWithValue("@nombre", p.Nombre);
             comando.Parameters.AddWithValue("@apellido", p.Apellido);
-            comando.Parameters.AddWithValue("@telefono", p.telefono);
+            comando.Parameters.AddWithValue("@telefono", p.Telefono);
+            comando.Parameters.AddWithValue("@mail", p.Mail);
             comando.CommandType = CommandType.Text;
             id = Convert.ToInt32(comando.ExecuteScalar());
             p.Id_propietario = id;
@@ -50,14 +51,15 @@ namespace StiegerModels
         {
             this.abrirConexion();
             int columnasAfectadas = -1;
-            string sql = @"UPDATE `propietario` SET`dni`=@dni,`nombre`=@nombre,`apellido`=@apellido,`telefono`=@telefono
+            string sql = @"UPDATE `propietario` SET`dni`=@dni,`nombre`=@nombre,`apellido`=@apellido,`telefono`=@telefono,`mail`=@mail
                             WHERE `id_propietario`=@id";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@dni", p.Dni);
             comando.Parameters.AddWithValue("@nombre", p.Nombre);
             comando.Parameters.AddWithValue("@apellido", p.Apellido);
-            comando.Parameters.AddWithValue("@telefono", p.telefono);
+            comando.Parameters.AddWithValue("@telefono", p.Telefono);
+            comando.Parameters.AddWithValue("@mail", p.Mail);
             comando.Parameters.AddWithValue("@id", p.Id_propietario);
             comando.CommandType = CommandType.Text;
             columnasAfectadas = Convert.ToInt32(comando.ExecuteNonQuery());
@@ -83,8 +85,8 @@ namespace StiegerModels
                 p.Dni = lector.GetString("dni");
                 p.Nombre = lector.GetString("nombre");
                 p.Apellido = lector.GetString("apellido");
-                p.telefono = lector.GetString("telefono");
-
+                p.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
+                p.Mail=lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
                 propietarios.Add(p);
             }
             this.cerrarConexion();
@@ -97,7 +99,7 @@ namespace StiegerModels
         public PropietarioModel TraerId(int id)
         {
             this.abrirConexion();
-            string sql = @"SELECT `id_propietario`, `dni`, `nombre`, `apellido`, `telefono` 
+            string sql = @"SELECT `id_propietario`, `dni`, `nombre`, `apellido`, `telefono`,`mail`
                         FROM `propietario` WHERE `id_propietario`=@id AND activo=1";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
@@ -112,7 +114,8 @@ namespace StiegerModels
                 p.Dni = lector.GetString("dni");
                 p.Nombre = lector.GetString("nombre");
                 p.Apellido = lector.GetString("apellido");
-                p.telefono = lector.GetString("telefono");
+                p.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
+                p.Mail=lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
             }
             else
             {p.Id_propietario = -1;}
