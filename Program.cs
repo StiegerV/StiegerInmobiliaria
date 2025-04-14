@@ -1,4 +1,3 @@
-using StiegerModels;
 
 var builder = WebApplication.CreateBuilder(args);
 

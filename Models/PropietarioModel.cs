@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
     public class PropietarioModel : personaModel
     {

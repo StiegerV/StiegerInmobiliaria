@@ -1,7 +1,7 @@
 using MySql.Data.MySqlClient;
 using System.Data;
 
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
     class RepositorioPropietario : Conexion, IrepositorioPropietario
     {

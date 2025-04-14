@@ -1,4 +1,4 @@
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
 
 public interface IrepositorioPropietario :iRepositorio<PropietarioModel>

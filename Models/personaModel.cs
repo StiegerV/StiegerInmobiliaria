@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
-   public class personaModel
+   public class personaModel 
     {
         [Required]
         public string Dni { get; set; }= string.Empty;

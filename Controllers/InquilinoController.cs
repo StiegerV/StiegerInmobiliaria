@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using StiegerModels;
+using StiegerInmobiliaria.Models;
 
 namespace StiegerControllers
 {

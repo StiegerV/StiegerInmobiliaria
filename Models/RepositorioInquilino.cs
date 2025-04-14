@@ -1,9 +1,9 @@
 using System.Data;
 using MySql.Data.MySqlClient;
 
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
-    class RepositorioInquilino : Conexion, IrepositorioInquilino
+   public class RepositorioInquilino : Conexion, IrepositorioInquilino
     {
         public int Alta(InquilinoModel i)
         {

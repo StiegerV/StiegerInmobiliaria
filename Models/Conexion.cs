@@ -1,8 +1,8 @@
 using MySql.Data.MySqlClient;
 
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
-    class Conexion
+    public class Conexion
     {
         private string connectionString = "server=localhost;uid=root;pwd=;database=stieger_inmobiliaria";
         public MySqlConnection conexionsql{get;set;}

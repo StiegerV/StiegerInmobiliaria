@@ -1,0 +1,46 @@
+@model IEnumerable<InmuebleModel>
+
+
+@{
+    ViewBag.Title = "Inmuebles";
+}
+
+<table class="table table-bordered table-striped table-hover bg-white text-dark">
+    <thead class="table-dark">
+        <tr>
+            <th>Tipo</th>
+            <th>Direccion</th>
+            <th>Uso</th>
+            <th>
+                <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = 0 })">
+                    <button class="btn btn-success btn-sm">Nuevo</button>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inmueble in Model)
+        {
+            <tr>
+                <td>@inmueble.Tipo</td>
+                <td>@inmueble.Direccion</td>
+                <td>@inmueble.Uso</td>
+                <td>
+                    <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('eliminar al inquilino?')">Eliminar</button>
+                    </form>
+
+                    <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = inmueble.Id_inmueble })">
+                        <button class="btn btn-warning btn-sm">Editar</button>
+                    </a>
+
+                    <a href="@Url.Action("Detalle", "Inmueble", new { id = inmueble.Id_inmueble })">
+                        <button class="btn btn-primary btn-sm">Detalle</button>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

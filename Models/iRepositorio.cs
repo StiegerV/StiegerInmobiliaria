@@ -1,4 +1,4 @@
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
     // <T> indica que es una interfaz generica que puede recibir varios tipos de objetos
 

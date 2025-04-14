@@ -1,4 +1,4 @@
-namespace StiegerModels
+namespace StiegerInmobiliaria.Models
 {
 
     interface IrepositorioInquilino : iRepositorio<InquilinoModel>
