@@ -1,0 +1,58 @@
+@model IEnumerable<ContratoDTO>
+
+
+@{
+    ViewBag.Title = "Contratos";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
+
+<table class="table table-bordered table-striped table-hover bg-white text-dark">
+    <thead class="table-dark">
+        <tr>
+            <th>Inmueble</th>
+            <th>Inquilino</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>
+                <a href="@Url.Action("NuevoEditar", "Contrato", new { id = 0 })">
+                    <button class="btn btn-success btn-sm">Nuevo</button>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            <tr>
+
+                <td> <a href="@Url.Action("Detalle", "Inmueble", new { id = i.Inmueble.Id_inmueble })">@i.Inmueble.ToString();</a></td>
+                <td><a href="@Url.Action("Detalle", "Inquilino", new { id = i.Inquilino.Id_inquilino })">@i.Inquilino.ToString();</a></td>
+                <td>@i.Fecha_inicio</td>
+                <td>@i.Fecha_fin</td>
+                <td>
+                    <form action="@Url.Action("Eliminar", "Contrato")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@i.Id_contrato" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('eliminar al inmueble?')">Eliminar</button>
+                    </form>
+
+                    <a href="@Url.Action("NuevoEditar", "Contrato", new { id = i.Id_contrato })">
+                        <button class="btn btn-warning btn-sm">Renovar</button>
+                    </a>
+
+                    <a href="@Url.Action("Detalle", "Contrato", new { id = i.Id_contrato })">
+                        <button class="btn btn-primary btn-sm">Detalle</button>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

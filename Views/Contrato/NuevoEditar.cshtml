@@ -1,0 +1,120 @@
+@model ContratoModel
+
+@{
+  ViewBag.Title = "Contratos";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+  <div class="alert alert-danger">
+    @TempData["Mensaje"]
+  </div>
+}
+
+<form asp-action="@(Model.Id_contrato>0 ? "EditarContrato" : "NuevoContrato")" asp-controller="Contrato" method="post">
+  @if (Model.Id_contrato > 0)
+  {
+    <input type="hidden" asp-for="Id_contrato" value="@Model.Id_contrato">
+  }
+  <div>
+    <h3>seleccione las fechas del contrato</h3>
+    <label for="inicio">inicio</label>
+    <input type="date" asp-for="FechaInicio" required>
+
+    <label for="fin">fin</label>
+    <input type="date" asp-for="FechaFin" required>
+
+    <button id="buscarInmuebles" type="button">Buscar Inmuebles</button>
+
+    <select asp-for="Id_inmueble" required></select>
+    <button type="button">Inspeccionar Inmueble</button>
+  </div>
+
+  <div>
+    <label for="Monto">Monto mensual</label>
+    <input type="number" asp-for="Monto" required>
+  </div>
+  <div>
+    <label asp-for="Id_inquilino">Inquilino</label>
+    <select asp-for="Id_inquilino" class="form-select" required></select>
+  </div>
+
+  <div class="mt-4 d-flex justify-content-between align-items-center"></div>
+  <button type="submit" class="btn btn-primary px-4">
+    @(Model.Id_contrato > 0 ? "Actualizar" : "Guardar")
+  </button>
+
+</form>
+
+
+<script>
+  const FechaInicio = document.getElementById('FechaInicio');
+  const hoy = new Date().toISOString().slice(0, 10);
+  FechaInicio.min = hoy;
+
+
+  //seteo de la fecha minima del contrato
+  FechaInicio.addEventListener('change', function () {
+    let inicioContrato = document.getElementById('FechaInicio');
+
+    let minimo = new Date(inicioContrato.value);
+    minimo.setDate(minimo.getDate() + 1);
+    minimo = minimo.toISOString().slice(0, 10);
+
+
+    let finContrato = document.getElementById('FechaFin');
+    finContrato.min = minimo;
+  });
+
+
+  $('#buscarInmuebles').click(function () {
+    let inicio = document.getElementById('FechaInicio').value;
+    let fin = document.getElementById('FechaFin').value;
+
+    $.ajax({
+      url: `/Contrato/buscarInmuebles?inicio=${inicio}&fin=${fin}`,
+      method: 'GET',
+      success: function (data) {
+        $('#Id_inmueble').empty();
+        for (const i of data) {
+          $('#Id_inmueble').append(new Option(`${i.tipo} ${i.direccion}`, i.id_inmueble))
+        }
+      },
+      error: function () {
+        alert('Ocurrió un error');
+      }
+    });
+  });
+
+
+  $(document).ready(function () {
+    $('#Id_inquilino').select2({
+      language: "es",
+      theme: "bootstrap",
+      placeholder: "nombre, apellido o dni",
+      minimumInputLength: 3,
+      maximumInputLength: 25,
+      ajax: {
+        delay: 250,
+        dataType: "json",
+        cache: true,
+        url: '/Inquilino/Buscar',
+        data: function (params) {
+          return {
+            term: params.term
+          };
+        },
+        processResults: function (res) {
+          return {
+            results: res.map(p => ({
+              id: p.id_inquilino,
+              text: `${p.nombre} ${p.apellido} ${p.dni}`
+            }))
+          };
+        }
+      }
+    });
+  });
+</script>
+

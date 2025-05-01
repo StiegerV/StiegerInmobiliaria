@@ -1,9 +1,10 @@
 using System.Data;
 using MySql.Data.MySqlClient;
+using StiegerInmobiliaria.DTOs;
 
 namespace StiegerInmobiliaria.Models
 {
-   public class RepositorioInquilino : Conexion, IrepositorioInquilino
+    public class RepositorioInquilino : Conexion, IrepositorioInquilino
     {
         public int Alta(InquilinoModel i)
         {
@@ -120,6 +121,61 @@ namespace StiegerInmobiliaria.Models
             this.cerrarConexion();
 
             return i;
+        }
+
+        public InquilinoDTO traerIdDTO(int id)
+        {
+            this.abrirConexion();
+            string sql =
+                @"SELECT `id_inquilino`, `nombre`, `apellido` FROM `inquilino` WHERE `id_inquilino`=@id AND `activo`=1";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            var i = new InquilinoDTO();
+            if (lector.Read())
+            {
+                i.Id_inquilino = lector.GetInt16("id_inquilino");
+                i.Nombre = lector.GetString("nombre");
+                i.Apellido = lector.GetString("apellido");
+            }
+            this.cerrarConexion();
+
+            return i;
+        }
+
+
+        public List<InquilinoModel> Busqueda(string dato)
+        {
+            dato = "%" + dato + "%";
+            this.abrirConexion();
+            string sql = @"SELECT `id_inquilino`, `nombre`,`apellido`,`dni` FROM `inquilino` 
+            WHERE `activo`=1 AND `nombre` LIKE @dato 
+            OR `activo`=1 AND `apellido` LIKE @dato 
+            OR `activo`=1 AND `dni`LIKE @dato";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@dato", dato);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            List<InquilinoModel> inquilinos = new List<InquilinoModel>();
+
+            while (lector.Read())
+            {
+                InquilinoModel p = new InquilinoModel();
+                p.Id_inquilino = lector.GetInt16("id_inquilino");
+                p.Dni = lector.GetString("dni");
+                p.Nombre = lector.GetString("nombre");
+                p.Apellido = lector.GetString("apellido");
+                inquilinos.Add(p);
+            }
+
+            this.cerrarConexion();
+
+            return inquilinos;
         }
     }
 }

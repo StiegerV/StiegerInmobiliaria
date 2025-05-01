@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 
-namespace StiegerControllers
+namespace StiegerInmobiliaria.Controllers
 {
     public class InquilinoController : Controller
     {
@@ -70,8 +70,17 @@ namespace StiegerControllers
 
         public ActionResult Detalle(int id)
         {
-              InquilinoModel inquilino = repositorio.TraerId(id);
+            InquilinoModel inquilino = repositorio.TraerId(id);
             return View(inquilino);
+        }
+
+
+        [HttpGet]
+        [Route("[controller]/Buscar")]
+        public ActionResult Buscar(string term)
+        {
+            var propietarios = repositorio.Busqueda(term);
+            return Json(propietarios);
         }
     }
 }

@@ -1,9 +1,11 @@
+using StiegerInmobiliaria.DTOs;
 namespace StiegerInmobiliaria.Models
 {
 
     interface IrepositorioInquilino : iRepositorio<InquilinoModel>
     {
-        //se podrian agregar mas metodos especificos de datos para inquilino
+        public InquilinoDTO traerIdDTO(int id);
+        public List<InquilinoModel> Busqueda(string dato);
     }
     
 }

@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using System.Data;
+using StiegerInmobiliaria.DTOs;
 
 namespace StiegerInmobiliaria.Models
 {
@@ -28,7 +29,7 @@ namespace StiegerInmobiliaria.Models
             return id;
         }
 
-/**/
+        /**/
         public int Baja(int id)
         {
             this.abrirConexion();
@@ -86,7 +87,7 @@ namespace StiegerInmobiliaria.Models
                 p.Nombre = lector.GetString("nombre");
                 p.Apellido = lector.GetString("apellido");
                 p.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
-                p.Mail=lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
+                p.Mail = lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
                 propietarios.Add(p);
             }
             this.cerrarConexion();
@@ -115,10 +116,66 @@ namespace StiegerInmobiliaria.Models
                 p.Nombre = lector.GetString("nombre");
                 p.Apellido = lector.GetString("apellido");
                 p.Telefono = lector.IsDBNull(lector.GetOrdinal("telefono")) ? null : lector.GetString("telefono");
-                p.Mail=lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
+                p.Mail = lector.IsDBNull(lector.GetOrdinal("mail")) ? null : lector.GetString("mail");
             }
             else
-            {p.Id_propietario = -1;}
+            { p.Id_propietario = -1; }
+            this.cerrarConexion();
+
+            return p;
+        }
+
+        public List<PropietarioModel> Busqueda(string dato)
+        {
+            dato = "%" + dato + "%";
+            this.abrirConexion();
+            string sql = @"SELECT `id_propietario`, `nombre`,`apellido`,`dni` FROM `propietario` 
+            WHERE `activo`=1 AND `nombre` LIKE @dato 
+            OR `activo`=1 AND `apellido` LIKE @dato 
+            OR `activo`=1 AND `dni`LIKE @dato";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@dato", dato);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            List<PropietarioModel> propietarios = new List<PropietarioModel>();
+
+            while (lector.Read())
+            {
+                PropietarioModel p = new PropietarioModel();
+                p.Id_propietario = lector.GetInt16("id_propietario");
+                p.Dni = lector.GetString("dni");
+                p.Nombre = lector.GetString("nombre");
+                p.Apellido = lector.GetString("apellido");
+                propietarios.Add(p);
+            }
+
+            this.cerrarConexion();
+
+            return propietarios;
+        }
+
+
+        public PropietarioDTO traerIdDTO(int id)
+        {
+            this.abrirConexion();
+            string sql = @"SELECT `id_propietario`, `nombre`, `apellido` FROM `propietario` WHERE `id_propietario`=@id AND activo=1";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            var p = new PropietarioDTO();
+            if (lector.Read())
+            {
+                p.Id_propietario = lector.GetInt16("id_propietario");
+                p.Nombre = lector.GetString("nombre");
+                p.Apellido = lector.GetString("apellido");
+            }
+            else
+            { p.Id_propietario = -1; }
             this.cerrarConexion();
 
             return p;

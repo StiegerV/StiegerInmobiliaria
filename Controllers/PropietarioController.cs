@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 
-namespace StiegerControllers
+namespace StiegerInmobiliaria.Controllers
 {
     public class PropietarioController : Controller
     {
@@ -15,13 +15,15 @@ namespace StiegerControllers
         }
 
         //el nombre del metodo es el que devuelve la vista
-        public ActionResult Indice() {
+        public ActionResult Indice()
+        {
             var propietarios = repositorio.TraerTodos();
             return View(propietarios);
         }
 
         [HttpPost]
-        public ActionResult Eliminar(int id){
+        public ActionResult Eliminar(int id)
+        {
             try
             {
                 repositorio.Baja(id);
@@ -71,10 +73,16 @@ namespace StiegerControllers
 
         public ActionResult Detalle(int id)
         {
-              PropietarioModel propietario = repositorio.TraerId(id);
+            PropietarioModel propietario = repositorio.TraerId(id);
             return View(propietario);
         }
 
-
+        [HttpGet]
+        [Route("[controller]/Buscar")]
+        public ActionResult Buscar(string term)
+        {
+            var propietarios = repositorio.Busqueda(term);
+            return Json(propietarios);
+        }
     }
 }

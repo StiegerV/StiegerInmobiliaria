@@ -1,4 +1,16 @@
 @model IEnumerable<PropietarioModel>
+
+@{
+    ViewBag.Title = "Indice Propietario";
+}
+<h2>@ViewBag.Title</h2>
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
     <thead class="table-dark">
         <tr>
@@ -23,7 +35,7 @@
                     <form action="@Url.Action("Eliminar", "Propietario")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@propietario.Id_propietario" />
                         <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('eliminar al inquilino?')">Eliminar</button>
+                            onclick="return confirm('eliminar al propietario?')">Eliminar</button>
                     </form>
 
                     <a href="@Url.Action("NuevoEditar", "Propietario", new { id = propietario.Id_propietario })">

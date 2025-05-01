@@ -1,4 +1,16 @@
 @model StiegerInmobiliaria.Models.InquilinoModel
+
+@{
+    ViewBag.Title = "Detalle Inquilino";
+}
+<h2>@ViewBag.Title</h2>
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
 <form action="@Url.Action("Eliminar", "Inquilino")" method="post" style="display:inline;">
     <input type="hidden" name="id" value="@Model.Id_inquilino" />
     <button type="submit" class="btn btn-danger btn-sm rounded"

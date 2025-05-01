@@ -4,6 +4,15 @@
 @{
     ViewBag.Title = "Inmuebles";
 }
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
 
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
     <thead class="table-dark">
@@ -29,7 +38,7 @@
                     <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
                         <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('eliminar al inquilino?')">Eliminar</button>
+                            onclick="return confirm('eliminar al inmueble?')">Eliminar</button>
                     </form>
 
                     <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = inmueble.Id_inmueble })">
