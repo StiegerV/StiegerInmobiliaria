@@ -13,8 +13,8 @@ namespace StiegerInmobiliaria.Models
             string sql = @"INSERT INTO contrato( monto,fecha_inicio,fecha_fin,id_inmueble,id_inquilino,creado_por) 
             VALUES (@monto,@fecha_inicio,@fecha_fin,@id_inmueble,@id_inquilino,1)";
             //formateo de fehcas para mysql
-            string inicio=c.FechaInicio.ToString("yyyy-MM-dd");
-            string fin=c.FechaFin.ToString("yyyy-MM-dd");
+            string inicio = c.FechaInicio.ToString("yyyy-MM-dd");
+            string fin = c.FechaFin.ToString("yyyy-MM-dd");
 
             Console.WriteLine(inicio);
             Console.WriteLine(fin);
@@ -59,10 +59,12 @@ namespace StiegerInmobiliaria.Models
             string sql = @"*UPDATE `contrato` 
             SET monto=@monto,fecha_inicio=@fecha_inicio,fecha_fin=@fecha_fin,id_inmueble=@id_inmueble,id_inquilino=@id_inquilino 
             WHERE id_contrato=@id_contrato";
+            string inicio = c.FechaInicio.ToString("yyyy-MM-dd");
+            string fin = c.FechaFin.ToString("yyyy-MM-dd");
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.Parameters.AddWithValue("@monto", c.Monto);
-            comando.Parameters.AddWithValue("@fecha_inicio", c.FechaInicio);
-            comando.Parameters.AddWithValue("@fecha_fin", c.FechaFin);
+            comando.Parameters.AddWithValue("@fecha_inicio", inicio);
+            comando.Parameters.AddWithValue("@fecha_fin", fin);
             comando.Parameters.AddWithValue("@id_inmueble", c.Id_inmueble);
             comando.Parameters.AddWithValue("@id_inquilino", c.Id_inquilino);
             comando.Parameters.AddWithValue("@id_contrato", c.Id_contrato);

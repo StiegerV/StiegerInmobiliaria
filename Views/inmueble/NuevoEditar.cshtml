@@ -80,7 +80,7 @@
                         {
                             <img src="@Model.Imagen" alt="imagen actual" class="img-thumbnail mb-2"
                                 style="max-width: 200px;" />
-                            <input style="hidden" name="ImagenOriginal" value="@Model.Imagen" />
+                            <input type="hidden" name="ImagenOriginal" value="@Model.Imagen" />
                             <input type="file" class="form-control mt-2" asp-for="ImagenArchivo" accept="image/*" />
 
                         }

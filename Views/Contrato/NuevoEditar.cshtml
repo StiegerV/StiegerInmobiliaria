@@ -12,40 +12,67 @@
   </div>
 }
 
-<form asp-action="@(Model.Id_contrato>0 ? "EditarContrato" : "NuevoContrato")" asp-controller="Contrato" method="post">
-  @if (Model.Id_contrato > 0)
-  {
-    <input type="hidden" asp-for="Id_contrato" value="@Model.Id_contrato">
-  }
-  <div>
-    <h3>seleccione las fechas del contrato</h3>
-    <label for="inicio">inicio</label>
-    <input type="date" asp-for="FechaInicio" required>
+<h2 class="card-title text-center text-primary mb-4">
+  @(Model.Id_contrato > 0 ? "Renovar Contrato" : "Nuevo Contrato")
+</h2>
 
-    <label for="fin">fin</label>
-    <input type="date" asp-for="FechaFin" required>
+      <form asp-action="NuevoContrato" asp-controller="Contrato" method="post">
 
-    <button id="buscarInmuebles" type="button">Buscar Inmuebles</button>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label asp-for="FechaInicio" class="form-label">Inicio</label>
+            <input type="date" asp-for="FechaInicio" class="form-control" required />
+          </div>
 
-    <select asp-for="Id_inmueble" required></select>
-    <button type="button">Inspeccionar Inmueble</button>
+          <div class="col-md-6">
+            <label asp-for="FechaFin" class="form-label">Fin</label>
+            <input type="date" asp-for="FechaFin" class="form-control" required />
+          </div>
+
+          <div class="col-md-8">
+            <label asp-for="Id_inmueble" class="form-label">Inmueble</label>
+            <div class="d-flex gap-2">
+              <select asp-for="Id_inmueble" class="form-select" required>
+                @if (Model.Id_inmueble>0)
+                {
+                <option value="@Model.Id_inmueble">@TempData["Inmueble"].ToString()</option>
+                }
+              </select>
+              <button id="buscarInmuebles" type="button" class="btn btn-outline-secondary">
+                Buscar
+              </button>
+              <button id="btnspec" style="display: none;" class="btn btn-outline-info">
+                <a id="spec" href="" target="_blank">Inspeccionar</a>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label asp-for="Monto" class="form-label">Monto mensual</label>
+            <input type="number" asp-for="Monto" class="form-control" required />
+          </div>
+
+          <div class="col-md-6">
+            <label asp-for="Id_inquilino" class="form-label">Inquilino</label>
+            <select asp-for="Id_inquilino" class="form-select" required>
+              @if (Model.Id_inquilino>0)
+              {
+                <option value="@Model.Id_inquilino">@TempData["Inquilino"].ToString()</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary px-4">
+            @(Model.Id_contrato > 0 ? "Actualizar" : "Guardar")
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
+</div>
 
-  <div>
-    <label for="Monto">Monto mensual</label>
-    <input type="number" asp-for="Monto" required>
-  </div>
-  <div>
-    <label asp-for="Id_inquilino">Inquilino</label>
-    <select asp-for="Id_inquilino" class="form-select" required></select>
-  </div>
-
-  <div class="mt-4 d-flex justify-content-between align-items-center"></div>
-  <button type="submit" class="btn btn-primary px-4">
-    @(Model.Id_contrato > 0 ? "Actualizar" : "Guardar")
-  </button>
-
-</form>
 
 
 <script>
@@ -86,6 +113,11 @@
       }
     });
   });
+
+  $('#Id_inmueble').change(function () {
+    $('#btnspec').show();
+    $('#spec').attr('href', `/Inmueble/Detalle/${$(this).val()}`);
+  })
 
 
   $(document).ready(function () {

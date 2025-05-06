@@ -1,0 +1,31 @@
+@model CancelarDTO
+
+@{
+    ViewBag.Title = "Contratos";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<h2 class="card-title text-center text-primary mb-4">
+    Cancelar contrato
+</h2>
+
+<form asp-action="CancelarContrato" asp-controller="Contrato" method="post">
+    <input type="hidden" asp-for="id_contrato">
+    <label asp-for="fechaCancelacion">fecha efectiva de finalización anticipada</label>
+    <input type="date" asp-for="fechaCancelacion">
+    <button type="submit">Cancelar</button>
+</form>
+
+
+<script>
+    const FechaFin = document.getElementById('Contrato.FechaFin');
+    const hoy = new Date().toISOString().slice(0, 10);
+    FechaFin.min = hoy;
+</script>

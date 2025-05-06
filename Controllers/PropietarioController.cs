@@ -34,7 +34,6 @@ namespace StiegerInmobiliaria.Controllers
             {
                 TempData["Mensaje"] = "Error al eliminar propietario.";
                 return RedirectToAction("Indice");
-                throw;
             }
         }
 
@@ -57,9 +56,19 @@ namespace StiegerInmobiliaria.Controllers
         [HttpPost]
         public ActionResult NuevoPropietario(PropietarioModel propietario)
         {
-            Console.WriteLine(propietario.Id_propietario);
-            repositorio.Alta(propietario);
-            return RedirectToAction("indice");
+
+            try
+            {
+                repositorio.Alta(propietario);
+                TempData["Mensaje"] = "Propietario Creado .";
+                return RedirectToAction("indice");
+            }
+            catch (System.Exception)
+            {
+                TempData["Mensaje"] = "Error al crear propietario.";
+                return RedirectToAction("Indice");
+            }
+
         }
 
 
