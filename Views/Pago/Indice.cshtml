@@ -1,0 +1,64 @@
+@model IEnumerable<PagoDTO>
+
+
+@{
+    ViewBag.Title = "Pagos";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
+
+<table class="table table-bordered table-striped table-hover bg-white text-dark">
+    <thead class="table-dark">
+        <tr>
+            <th>Contrato</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>
+                <a href="@Url.Action("NuevoEditar", "Pago", new { id = 0 })">
+                    <button class="btn btn-success btn-sm">Nuevo</button>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("Detalle", "Contrato", new { id = i.Id_contrato })">@i.ToString();</a>
+                </td>
+                <td>@i.Monto</td>
+                <td>@i.Fecha</td>
+                <td>@i.Estado</td>
+                <td>
+                    <form action="@Url.Action("Eliminar", "Pago")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@i.Id_contrato" />
+
+
+                        @if (true)
+                        {
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('eliminar el pago?')">Eliminar</button>
+                        }
+
+
+
+                    </form>
+
+
+                    <a href="@Url.Action("Detalle", "Pago", new { id = i.Id_contrato })">
+                        <button class="btn btn-primary btn-sm">Detalle</button>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

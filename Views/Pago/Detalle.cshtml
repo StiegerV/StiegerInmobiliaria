@@ -1,0 +1,57 @@
+@model PagoDTO
+
+@{
+    ViewBag.Title = "Detalle Pago";
+}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">@ViewBag.Title</h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+@if (true)
+{
+        <div class="d-flex justify-content-center gap-2 mb-3">
+        <form action="@Url.Action("Eliminar", "Pago")" method="post"
+            onsubmit="return confirm('¿Eliminar el contrato?');">
+            <input type="hidden" name="id" value="@Model.Id_pago" />
+            <button type="submit" class="btn btn-danger btn-sm rounded shadow-sm">Eliminar</button>
+        </form>
+    </div>
+}
+
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover bg-white text-dark rounded">
+            <thead class="table-dark rounded-top">
+                <tr>
+                    <th>Identificador</th>
+                    <th>Contrato</th>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Observacion</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Id_pago</td>
+                    <td> 
+                        <a href="@Url.Action("Detalle", "Contrato", new { id = Model.Id_contrato })">@Model.ToString();</a>
+                    </td>
+                    <td>@Model.Monto</td>
+                    <td>@Model.Fecha</td>
+                    <td>@Model.Observacion</td>
+                    <td>@Model.Estado</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

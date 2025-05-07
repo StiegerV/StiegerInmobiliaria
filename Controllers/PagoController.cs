@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
+using StiegerInmobiliaria.DTOs;
 using StiegerInmobiliaria.Models;
 
 namespace StiegerInmobiliaria.Controllers
@@ -11,18 +12,17 @@ namespace StiegerInmobiliaria.Controllers
         private readonly iRepositorioContrato repositorioContrato;
 
 
-        PagoController()
+        public PagoController()
         {
-            repositorio = new RepositorioPago();
-            repositorioContrato = new RepositorioContrato();
+            this.repositorio = new RepositorioPago();
+            this.repositorioContrato = new RepositorioContrato();
         }
 
 
         public ActionResult Indice()
         {
-            List<ContratoModel> contratos = repositorioContrato.TraerTodos();
-
-            return View(contratos);
+            List<PagoDTO> pagos = repositorio.TraerTodosDTO();     
+            return View(pagos);
         }
 
 
@@ -43,17 +43,18 @@ namespace StiegerInmobiliaria.Controllers
 
         public ActionResult Detalle(int id)
         {
-            PagoModel p = repositorio.TraerId(id);
+            PagoDTO p = repositorio.traerIdDTO(id);
             return View(p);
         }
 
 
-        public ActionResult NuevoEditar(int id){
-            var p=new PagoModel();
-            
-            if (id>0)
+        public ActionResult NuevoEditar(int id)
+        {
+            var p = new PagoModel();
+
+            if (id > 0)
             {
-                p=repositorio.TraerId(id);
+                p = repositorio.TraerId(id);
             }
 
             return View(p);

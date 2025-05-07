@@ -8,7 +8,7 @@ namespace StiegerInmobiliaria.Models
 
         public double Monto{get;set;}
 
-        public DateTime fecha{get;set;}
+        public DateTime Fecha{get;set;}
 
 
         public string? Observacion{get;set;}

@@ -26,6 +26,7 @@ public class ContratoController : Controller
     public ActionResult Indice()
     {
         var listaContratos = new List<ContratoDTO>();
+        //cambiar a join en tabla
         foreach (var i in repositorio.TraerTodos())
         {
 
@@ -88,7 +89,7 @@ public class ContratoController : Controller
         var p = new PagoModel();
         p.Id_contrato = c.id_contrato;
         p.Monto = multa;
-        p.fecha = DateTime.Now;
+        p.Fecha = DateTime.Now;
         p.Observacion = "Multa por cancelacion";
         p.Estado = "en proceso";
         repositorioPago.Alta(p);
