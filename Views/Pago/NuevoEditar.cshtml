@@ -1,0 +1,96 @@
+@model PagoModel
+
+@{
+    ViewBag.Title = "Pagos";
+}
+
+<h2 class="card-title text-center text-primary mb-4">
+    @(Model.Id_pago > 0 ? "Editar Pago" : "Nuevo Pago")
+</h2>
+
+<form asp-action="@(Model.Id_pago > 0 ? "EditarPago" : "NuevoPago")" asp-controller="Pago" method="post">
+    <input type="hidden" asp-for="Id_pago" />
+
+    <div class="row g-3">
+        @if (Model.Id_pago == 0)
+        {
+            <div class="col-md-6">
+                <label asp-for="Id_contrato" class="form-label">Contrato</label>
+                <select asp-for="Id_contrato" class="form-select" required>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Monto" class="form-label">Monto</label>
+                <input type="number" asp-for="Monto" class="form-control" required />
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Fecha" class="form-label">Fecha de Pago</label>
+                <input type="date" asp-for="Fecha" class="form-control" required />
+            </div>
+
+
+        }
+        else
+        {
+            <input type="hidden" asp-for="Id_pago">
+        }
+
+        <div class="col-md-6"></div>
+        <label asp-for="Estado" class="form-label">Estado</label>
+        <select asp-for="Estado" class="form-select" required>
+            <option value="completado">Completado</option>
+            <option value="en proceso">En proceso</option>
+            <option value="fallo">Fallo</option>
+            <option value="anulado">Anulado</option>
+        </select>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Observacion" class="form-label">Observación</label>
+        <input type="text" asp-for="Observacion" class="form-control" />
+    </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary px-4">
+            @(Model.Id_pago > 0 ? "Actualizar" : "Guardar")
+        </button>
+    </div>
+</form>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#Fecha').val(new Date().toISOString().split('T')[0]);
+        $('#Id_contrato').select2({
+            language: "es",
+            theme: "bootstrap",
+            placeholder: "tipo inmueble o apellido inquilino",
+            minimumInputLength: 3,
+            maximumInputLength: 25,
+            ajax: {
+                delay: 250,
+                dataType: "json",
+                cache: true,
+                url: '/Contrato/BuscarContrato',
+                data: function (params) {
+                    return {
+                        term: params.term
+                    };
+                },
+                processResults: function (res) {
+                    return {
+                        results: res.map(p => ({
+                            id: p.id_contrato,
+                            text: `${p.tipo_inmueble} ${p.apellido_inquilino}`
+                        }))
+                    };
+                }
+            }
+        });
+    });
+</script>

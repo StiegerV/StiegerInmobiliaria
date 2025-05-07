@@ -21,7 +21,7 @@ namespace StiegerInmobiliaria.Controllers
 
         public ActionResult Indice()
         {
-            List<PagoDTO> pagos = repositorio.TraerTodosDTO();     
+            List<PagoDTO> pagos = repositorio.TraerTodosDTO();
             return View(pagos);
         }
 
@@ -44,6 +44,7 @@ namespace StiegerInmobiliaria.Controllers
         public ActionResult Detalle(int id)
         {
             PagoDTO p = repositorio.traerIdDTO(id);
+            Console.WriteLine(p.Test());
             return View(p);
         }
 
@@ -58,6 +59,27 @@ namespace StiegerInmobiliaria.Controllers
             }
 
             return View(p);
+        }
+
+        public ActionResult NuevoPago(PagoModel p)
+        {
+            try
+            {
+                repositorio.Alta(p);
+                TempData["Mensaje"] = "Pago creado exitosamente.";
+            }
+            catch (System.Exception)
+            {
+                TempData["Mensaje"] = "Error al crear pago.";
+
+            }
+            return RedirectToAction("Indice");
+        }
+
+        public ActionResult EditarPago(PagoModel p){
+            repositorio.Modificacion(p);
+
+            return RedirectToAction("Indice");
         }
     }
 }

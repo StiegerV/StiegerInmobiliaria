@@ -28,5 +28,9 @@ namespace StiegerInmobiliaria.DTOs
             return $"{Tipo}"+" "+$"{Apellido}";
         }
 
+        public string Test(){
+            return $"idp:{Id_pago} idc:{Id_contrato} m:{Monto} f:{Fecha} o:{Observacion} e:{Estado} idI:{Id_inquilino} ap_{Apellido} idI:{Id_inmueble} ti:{Tipo}";
+        }
+
     }
 }

@@ -122,6 +122,11 @@ namespace StiegerInmobiliaria.Models
             return p;
         }
 
+/*
+,i.id_inquilino,i.apellido,m.id_inmueble ,m.tipo
+                    JOIN inquilino as i on c.id_inquilino=i.id_inquilino
+                    JOIN inmueble as m on c.id_inmueble=m.id_inmueble
+*/
         public PagoDTO traerIdDTO(int id)
         {
             this.abrirConexion();

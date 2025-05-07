@@ -1,4 +1,5 @@
 using MySql.Data.MySqlClient;
+using StiegerInmobiliaria.DTOs;
 
 namespace StiegerInmobiliaria.Models
 {
@@ -128,6 +129,38 @@ namespace StiegerInmobiliaria.Models
             }
             this.cerrarConexion();
             return c;
+        }
+
+
+        public List<ContratoJSON> Busqueda(string dato)
+        {
+            dato = "%" + dato + "%";
+            this.abrirConexion();
+            string sql = @"SELECT `id_contrato`,c.`id_inmueble`,m.tipo,c.id_inquilino,i.apellido FROM `contrato` as c
+                        JOIN inmueble as m ON m.id_inmueble=c.`id_inmueble`
+                        JOIN inquilino as i ON i.id_inquilino=c.`id_inquilino`
+                        WHERE tipo LIKE @dato OR apellido LIKE @dato";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@dato", dato);
+            var lector = comando.ExecuteReader();
+
+            var contratos = new List<ContratoJSON>();
+
+            while (lector.Read())
+            {
+                var c = new ContratoJSON();
+                c.Id_contrato = lector.GetInt16("id_contrato");
+                c.Id_inmueble = lector.GetInt16("id_inmueble");
+                c.Tipo_inmueble = lector.GetString("tipo");
+                c.Id_inquilino = lector.GetInt16("id_inquilino");
+                c.Apellido_inquilino = lector.GetString("apellido");
+                contratos.Add(c);
+            }
+
+            this.cerrarConexion();
+
+            return contratos;
         }
     }
 }

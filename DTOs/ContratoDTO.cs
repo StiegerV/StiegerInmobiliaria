@@ -6,17 +6,17 @@ namespace StiegerInmobiliaria.DTOs
     {
         public int Id_contrato { get; set; }
 
-        public InquilinoDTO Inquilino { get; set; }
+        public InquilinoDTO? Inquilino { get; set; }
 
-        public PropietarioDTO Propietario { get; set; }
+        public PropietarioDTO? Propietario { get; set; }
 
-        public InmuebleDTO Inmueble { get; set; }
+        public InmuebleDTO? Inmueble { get; set; }
 
         public DateTime Fecha_inicio { get; set; }
 
         public DateTime Fecha_fin { get; set; }
 
-        public UsuarioDTO CreadoPor { get; set; }
+        public UsuarioDTO? CreadoPor { get; set; }
 
         public UsuarioDTO? FinalizadoPor { get; set; }
 

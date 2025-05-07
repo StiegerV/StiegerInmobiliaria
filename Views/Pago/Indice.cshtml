@@ -38,24 +38,23 @@
                 <td>@i.Monto</td>
                 <td>@i.Fecha</td>
                 <td>@i.Estado</td>
-                <td>
-                    <form action="@Url.Action("Eliminar", "Pago")" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@i.Id_contrato" />
-
-
-                        @if (true)
-                        {
+                <td style="display: flex; flex-direction: row; justify-content: space-around;">
+                    @if (true)
+                    {
+                        <form action="@Url.Action("Eliminar", "Pago")" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@i.Id_contrato" />
                             <button type="submit" class="btn btn-danger btn-sm"
                                 onclick="return confirm('eliminar el pago?')">Eliminar</button>
-                        }
+                        </form>
+                    }
+                    <div>
+                        <a href="@Url.Action("Detalle", "Pago", new { id = i.Id_pago })">
+                            <button class="btn btn-primary btn-sm">Detalle</button>
+                        </a>
+                    </div>
 
-
-
-                    </form>
-
-
-                    <a href="@Url.Action("Detalle", "Pago", new { id = i.Id_contrato })">
-                        <button class="btn btn-primary btn-sm">Detalle</button>
+                    <a href="@Url.Action("NuevoEditar", "Pago", new { id = i.Id_pago })">
+                        <button class="btn btn-warning btn-sm">Editar</button>
                     </a>
                 </td>
             </tr>

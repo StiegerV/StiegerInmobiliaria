@@ -153,6 +153,8 @@ public class ContratoController : Controller
 
     }
 
+
+//pasar a el controlador de inmueble
     [Route("[controller]/buscarInmuebles")]
     public ActionResult buscarInmuebles(string inicio, string fin)
     {
@@ -160,5 +162,15 @@ public class ContratoController : Controller
 
         return Json(disponibles);
     }
+
+
+    [Route("[controller]/buscarContrato")]
+    public ActionResult buscarContrato(string term)
+    {
+        var disponibles = repositorio.Busqueda(term);
+
+        return Json(disponibles);
+    }
+
 }
 
