@@ -11,8 +11,9 @@ namespace StiegerInmobiliaria.Models
         {
             this.abrirConexion();
             int id = -1;
-            string sql = @"INSERT INTO contrato( monto,fecha_inicio,fecha_fin,id_inmueble,id_inquilino,creado_por,fecha_fin_original) 
-            VALUES (@monto,@fecha_inicio,@fecha_fin,@id_inmueble,@id_inquilino,@fecha_fin_original,1)";
+            string sql = @"INSERT INTO contrato(monto, fecha_inicio, fecha_fin, id_inmueble, id_inquilino, fecha_fin_original, creado_por) 
+               VALUES (@monto, @fecha_inicio, @fecha_fin, @id_inmueble, @id_inquilino, @fecha_fin_original, 1);
+               SELECT LAST_INSERT_ID();";
             //formateo de fehcas para mysql
             string inicio = c.FechaInicio.ToString("yyyy-MM-dd");
             string fin = c.FechaFin.ToString("yyyy-MM-dd");

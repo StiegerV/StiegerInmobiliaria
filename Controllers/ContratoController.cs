@@ -34,7 +34,7 @@ public class ContratoController : Controller
             contratoDTO.Id_contrato = i.Id_contrato;
             contratoDTO.Fecha_inicio = i.FechaInicio;
             contratoDTO.Fecha_fin = i.FechaFin;
-            contratoDTO.Fecha_fin_original=i.Fecha_fin_original;
+            contratoDTO.Fecha_fin_original = i.Fecha_fin_original;
 
             var inquilinoDTO = repositorioInquilino.traerIdDTO(i.Id_inquilino);
             contratoDTO.Inquilino = inquilinoDTO;
@@ -138,25 +138,40 @@ public class ContratoController : Controller
         return View(contrato);
     }
 
-    public ActionResult NuevoContrato(ContratoModel contrato)
+    public ActionResult NuevoContrato(ContratoModel c)
     {
         try
         {
-            repositorio.Alta(contrato);
+
+            int id=repositorio.Alta(c);
+            int mesesTotales = ((c.FechaFin.Year - c.FechaInicio.Year) * 12) + c.FechaFin.Month - c.FechaInicio.Month;
+            var fecha = c.FechaInicio;
+            for (int i = 0; i < mesesTotales; i++)
+            {
+                var p = new PagoModel();
+                p.Id_contrato = id;
+                p.Monto = c.Monto;
+                p.Fecha = fecha;
+                p.Observacion = $"Pago {fecha.Month}";
+                p.Estado = "en proceso";
+                repositorioPago.Alta(p);
+                fecha = fecha.AddMonths(1);
+            }
             TempData["Mensaje"] = "Contrato creado exitosamente.";
-            
+
             return RedirectToAction("Indice");
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
-            TempData["Mensaje"] = "Contrato eliminado exitosamente.";
+            TempData["Mensaje"] = "Ah ocurrido un error al crear contrato";
+            Console.WriteLine(ex);
             return RedirectToAction("Indice");
         }
 
     }
 
 
-//pasar a el controlador de inmueble
+    //pasar a el controlador de inmueble
     [Route("[controller]/buscarInmuebles")]
     public ActionResult buscarInmuebles(string inicio, string fin)
     {

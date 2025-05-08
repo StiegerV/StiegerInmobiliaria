@@ -225,35 +225,43 @@ namespace StiegerInmobiliaria.Models
             return i;
         }
         public List<InmuebleDTO> traerDesocupados(string inicio, string fin)
-        {
-            var desocupados = new List<InmuebleDTO>();
-            this.abrirConexion();
-            string sql = @"SELECT i.id_inmueble,i.tipo,i.direccion
-                        FROM inmueble AS i
-                        WHERE i.id_inmueble 
-                        NOT IN (
-                        SELECT c.id_inmueble
-                        FROM contrato AS c
-                        WHERE c.fecha_inicio <= @fechaFin
-                        AND c.fecha_fin >= @fechaInicio AND `activo`=1 )";
-            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-            inicio="'"+inicio+"'";
-            fin="'"+fin+"'";
-            comando.Parameters.AddWithValue("@fechaInicio", inicio);
-            comando.Parameters.AddWithValue("@fechaFin", fin);
-            var lector = comando.ExecuteReader();
-            while (lector.Read())
-            {
-                var i = new InmuebleDTO();
-                i.Id_inmueble = lector.GetInt16("id_inmueble");
-                i.Tipo = lector.GetString("tipo");
-                i.Direccion = lector.GetString("direccion");
-                desocupados.Add(i);
+{
+    var desocupados = new List<InmuebleDTO>();
+    this.abrirConexion();
 
-            }
-            this.cerrarConexion();
-            return desocupados;
-        }
+    string sql = @"
+        SELECT i.id_inmueble, i.tipo, i.direccion, i.precio
+        FROM inmueble AS i
+        WHERE i.id_inmueble NOT IN (
+            SELECT c.id_inmueble
+            FROM contrato AS c
+            WHERE c.fecha_inicio <= @fechaFin
+              AND c.fecha_fin >= @fechaInicio
+              AND activo = 1
+        )";
+
+    MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+    comando.Parameters.AddWithValue("@fechaInicio", inicio);
+    comando.Parameters.AddWithValue("@fechaFin", fin);
+
+    var lector = comando.ExecuteReader();
+    while (lector.Read())
+    {
+        var i = new InmuebleDTO
+        {
+            Id_inmueble = lector.GetInt16("id_inmueble"),
+            Tipo = lector.GetString("tipo"),
+            Direccion = lector.GetString("direccion"),
+            Monto = lector.GetFloat("precio")
+        };
+
+        desocupados.Add(i);
+    }
+
+    this.cerrarConexion();
+    return desocupados;
+}
+
 
 
     }

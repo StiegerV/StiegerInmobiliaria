@@ -22,7 +22,9 @@
     <div class="col-12">
       <label class="form-label">Fechas del contrato</label>
       <div class="d-flex gap-2">
+        <label asp-for="FechaInicio" class="form-label">inicio</label>
         <input type="date" asp-for="FechaInicio" class="form-control" required id="FechaInicio" />
+        <label asp-for="FechaFin" class="form-label">fin</label>
         <input type="date" asp-for="FechaFin" class="form-control" required id="FechaFin" />
         <button id="buscarInmuebles" type="button" class="btn btn-outline-secondary">
           Buscar
@@ -73,7 +75,7 @@
   const FechaInicio = document.getElementById('FechaInicio');
   const hoy = new Date().toISOString().slice(0, 10);
   FechaInicio.min = hoy;
-  document.getElementById('FechaFin').min=hoy;
+  document.getElementById('FechaFin').min = hoy;
   $('#FechaInicio').val(hoy);
   $('#FechaFin').val(hoy);
 
@@ -93,7 +95,11 @@
       success: function (data) {
         $('#Id_inmueble').empty();
         for (const i of data) {
-          $('#Id_inmueble').append(new Option(`${i.tipo} ${i.direccion}`, i.id_inmueble));
+          let option = document.createElement('option');
+          option.text = `${i.tipo} ${i.direccion}`;
+          option.value = i.id_inmueble;
+          option.setAttribute('data-precio', i.monto);
+          $('#Id_inmueble').append(option);
         }
       },
       error: function () {
@@ -105,6 +111,8 @@
   $('#Id_inmueble').change(function () {
     $('#btnspec').show();
     $('#spec').attr('href', `/Inmueble/Detalle/${$(this).val()}`);
+    let precio = $('#Id_inmueble option:selected').data('precio');
+    $('#Monto').val(precio);
   });
 
   $(document).ready(function () {

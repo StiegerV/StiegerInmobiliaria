@@ -7,6 +7,8 @@ namespace StiegerInmobiliaria.DTOs
 
         public string? Direccion{get;set;}
 
+        public float Monto{get;set;}
+
 
          public override string ToString()
         {
