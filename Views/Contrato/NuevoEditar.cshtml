@@ -16,88 +16,76 @@
   @(Model.Id_contrato > 0 ? "Renovar Contrato" : "Nuevo Contrato")
 </h2>
 
-      <form asp-action="NuevoContrato" asp-controller="Contrato" method="post">
+<form asp-action="NuevoContrato" asp-controller="Contrato" method="post">
+  <div class="row g-3">
 
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label asp-for="FechaInicio" class="form-label">Inicio</label>
-            <input type="date" asp-for="FechaInicio" class="form-control" required />
-          </div>
-
-          <div class="col-md-6">
-            <label asp-for="FechaFin" class="form-label">Fin</label>
-            <input type="date" asp-for="FechaFin" class="form-control" required />
-          </div>
-
-          <div class="col-md-8">
-            <label asp-for="Id_inmueble" class="form-label">Inmueble</label>
-            <div class="d-flex gap-2">
-              <select asp-for="Id_inmueble" class="form-select" required>
-                @if (Model.Id_inmueble>0)
-                {
-                <option value="@Model.Id_inmueble">@TempData["Inmueble"].ToString()</option>
-                }
-              </select>
-              <button id="buscarInmuebles" type="button" class="btn btn-outline-secondary">
-                Buscar
-              </button>
-              <button id="btnspec" style="display: none;" class="btn btn-outline-info">
-                <a id="spec" href="" target="_blank">Inspeccionar</a>
-              </button>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <label asp-for="Monto" class="form-label">Monto mensual</label>
-            <input type="number" asp-for="Monto" class="form-control" required />
-          </div>
-
-          <div class="col-md-6">
-            <label asp-for="Id_inquilino" class="form-label">Inquilino</label>
-            <select asp-for="Id_inquilino" class="form-select" required>
-              @if (Model.Id_inquilino>0)
-              {
-                <option value="@Model.Id_inquilino">@TempData["Inquilino"].ToString()</option>
-              }
-            </select>
-          </div>
-        </div>
-
-        <div class="mt-4 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary px-4">
-            @(Model.Id_contrato > 0 ? "Actualizar" : "Guardar")
-          </button>
-        </div>
-      </form>
+    <div class="col-12">
+      <label class="form-label">Fechas del contrato</label>
+      <div class="d-flex gap-2">
+        <input type="date" asp-for="FechaInicio" class="form-control" required id="FechaInicio" />
+        <input type="date" asp-for="FechaFin" class="form-control" required id="FechaFin" />
+        <button id="buscarInmuebles" type="button" class="btn btn-outline-secondary">
+          Buscar
+        </button>
+      </div>
     </div>
+
+    <div class="col-md-8">
+      <label asp-for="Id_inmueble" class="form-label">Inmueble</label>
+      <div class="d-flex gap-2">
+        <select asp-for="Id_inmueble" class="form-select" required id="Id_inmueble">
+          @if (Model.Id_inmueble > 0)
+          {
+            <option value="@Model.Id_inmueble">@TempData["Inmueble"].ToString()</option>
+          }
+        </select>
+        <button id="btnspec" style="display: none;" class="btn btn-outline-info">
+          <a id="spec" href="" target="_blank" class="text-decoration-none text-reset">Inspeccionar</a>
+        </button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <label asp-for="Monto" class="form-label">Monto mensual</label>
+      <input type="number" asp-for="Monto" class="form-control" required />
+    </div>
+
+    <div class="col-md-6">
+      <label asp-for="Id_inquilino" class="form-label">Inquilino</label>
+      <select asp-for="Id_inquilino" class="form-select" required id="Id_inquilino">
+        @if (Model.Id_inquilino > 0)
+        {
+          <option value="@Model.Id_inquilino">@TempData["Inquilino"].ToString()</option>
+        }
+      </select>
+    </div>
+
   </div>
-</div>
 
-
+  <div class="mt-4 d-flex justify-content-end">
+    <button type="submit" class="btn btn-primary px-4">
+      @(Model.Id_contrato > 0 ? "Actualizar" : "Guardar")
+    </button>
+  </div>
+</form>
 
 <script>
   const FechaInicio = document.getElementById('FechaInicio');
   const hoy = new Date().toISOString().slice(0, 10);
   FechaInicio.min = hoy;
+  document.getElementById('FechaFin').min=hoy;
+  $('#FechaInicio').val(hoy);
+  $('#FechaFin').val(hoy);
 
-
-  //seteo de la fecha minima del contrato
   FechaInicio.addEventListener('change', function () {
-    let inicioContrato = document.getElementById('FechaInicio');
-
-    let minimo = new Date(inicioContrato.value);
+    const minimo = new Date(this.value);
     minimo.setDate(minimo.getDate() + 1);
-    minimo = minimo.toISOString().slice(0, 10);
-
-
-    let finContrato = document.getElementById('FechaFin');
-    finContrato.min = minimo;
+    document.getElementById('FechaFin').min = minimo.toISOString().slice(0, 10);
   });
 
-
   $('#buscarInmuebles').click(function () {
-    let inicio = document.getElementById('FechaInicio').value;
-    let fin = document.getElementById('FechaFin').value;
+    const inicio = $('#FechaInicio').val();
+    const fin = $('#FechaFin').val();
 
     $.ajax({
       url: `/Contrato/buscarInmuebles?inicio=${inicio}&fin=${fin}`,
@@ -105,7 +93,7 @@
       success: function (data) {
         $('#Id_inmueble').empty();
         for (const i of data) {
-          $('#Id_inmueble').append(new Option(`${i.tipo} ${i.direccion}`, i.id_inmueble))
+          $('#Id_inmueble').append(new Option(`${i.tipo} ${i.direccion}`, i.id_inmueble));
         }
       },
       error: function () {
@@ -117,8 +105,7 @@
   $('#Id_inmueble').change(function () {
     $('#btnspec').show();
     $('#spec').attr('href', `/Inmueble/Detalle/${$(this).val()}`);
-  })
-
+  });
 
   $(document).ready(function () {
     $('#Id_inquilino').select2({
@@ -133,9 +120,7 @@
         cache: true,
         url: '/Inquilino/Buscar',
         data: function (params) {
-          return {
-            term: params.term
-          };
+          return { term: params.term };
         },
         processResults: function (res) {
           return {
@@ -148,6 +133,4 @@
       }
     });
   });
-
 </script>
-

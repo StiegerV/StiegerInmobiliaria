@@ -34,7 +34,7 @@
                 <td>@inmueble.Tipo</td>
                 <td>@inmueble.Direccion</td>
                 <td>@inmueble.Uso</td>
-                <td>
+                <td style="display: flex; flex-direction: row; justify-content: space-around;">
                     <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
                         <button type="submit" class="btn btn-danger btn-sm"
@@ -45,9 +45,11 @@
                         <button class="btn btn-warning btn-sm">Editar</button>
                     </a>
 
+                    <div>
                     <a href="@Url.Action("Detalle", "Inmueble", new { id = inmueble.Id_inmueble })">
                         <button class="btn btn-primary btn-sm">Detalle</button>
                     </a>
+                    </div>
                 </td>
             </tr>
         }

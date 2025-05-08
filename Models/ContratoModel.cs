@@ -13,6 +13,8 @@ namespace StiegerInmobiliaria.Models
         [Required]
         public int Id_inquilino { get; set; }
 
+        public DateTime? Fecha_fin_original{get;set;}
+
         [Required]
         public int Creador_por { get; set; }
 

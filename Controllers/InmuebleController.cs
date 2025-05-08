@@ -73,42 +73,30 @@ namespace StiegerInmobiliaria.Controllers
         {
             var archivo = inmueble.ImagenArchivo;
             string imagenOriginal = Request.Form["ImagenOriginal"];
-            if (!imagenOriginal.Equals(archivo))
+
+            if (archivo != null)
             {
-                this.EliminarArchivoServer(imagenOriginal);
-            }
-
-
-
-            if (archivo != null && archivo.Length > 0)
-            {
-                var carpetaDestino = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                if (!Directory.Exists(carpetaDestino))
-                    Directory.CreateDirectory(carpetaDestino);
-
-                //Ticks para caracteres no válidos
-                var nombreArchivo = DateTime.Now.Ticks + Path.GetExtension(archivo.FileName);
-                var ruta = Path.Combine(carpetaDestino, nombreArchivo);
-
-                using (var stream = new FileStream(ruta, FileMode.Create))
+                if (!string.IsNullOrEmpty(imagenOriginal) && !imagenOriginal.Equals(archivo))
                 {
-                    archivo.CopyTo(stream);
+                    EliminarArchivoServer(imagenOriginal);
                 }
-                inmueble.Imagen = "/uploads/" + nombreArchivo;
-            }
 
+                string url = GuardarArchivo(inmueble);
+                inmueble.Imagen = url;
+            }
 
             repositorio.Modificacion(inmueble);
             TempData["Mensaje"] = $"Inmueble nro {inmueble.Id_inmueble} editado";
-
             return RedirectToAction("Indice");
         }
 
         public ActionResult NuevoInmueble(InmuebleModel inmueble)
         {
-            var ImagenArchivo = Request.Form["ImagenArchivo"];
-            Console.WriteLine(ImagenArchivo);
+            if (inmueble.ImagenArchivo != null)
+            {
+                var url = GuardarArchivo(inmueble);
+                inmueble.Imagen = url;
+            }
             repositorio.Alta(inmueble);
             TempData["Mensaje"] = $"Inmueble creado";
 
@@ -121,7 +109,8 @@ namespace StiegerInmobiliaria.Controllers
         {
             inmueble = repositorio.TraerId(inmueble.Id_inmueble);
 
-            if (this.EliminarArchivobd(inmueble) == 0)
+            Console.WriteLine("if antes de la llamada");
+            if (EliminarArchivobd(inmueble) == 0)
             {
                 TempData["Mensaje"] = $"No se pudo eliminar la imagen";
             }
@@ -135,8 +124,11 @@ namespace StiegerInmobiliaria.Controllers
         private int EliminarArchivobd(InmuebleModel inmueble)
         {
             int funca = 0;
+            Console.WriteLine("chekeo si tiene una imagen me cago en dio");
+            Console.WriteLine(inmueble.Imagen);
             if (!string.IsNullOrEmpty(inmueble.Imagen))
             {
+                Console.WriteLine("entro al if de eliminar");
                 var ruta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", inmueble.Imagen.TrimStart('/'));
                 if (System.IO.File.Exists(ruta))
                 {
@@ -162,6 +154,32 @@ namespace StiegerInmobiliaria.Controllers
                 }
             }
             return funca;
+        }
+
+
+        private string GuardarArchivo(InmuebleModel inmueble)
+        {
+            var archivo = inmueble.ImagenArchivo;
+            var url = "";
+            if (archivo != null && archivo.Length > 0)
+            {
+                var carpetaDestino = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                if (!Directory.Exists(carpetaDestino))
+                    Directory.CreateDirectory(carpetaDestino);
+
+                //Ticks para caracteres no válidos
+                var nombreArchivo = DateTime.Now.Ticks + Path.GetExtension(archivo.FileName);
+                var ruta = Path.Combine(carpetaDestino, nombreArchivo);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    archivo.CopyTo(stream);
+                }
+                url = "/uploads/" + nombreArchivo;
+            }
+
+            return url;
         }
 
     }

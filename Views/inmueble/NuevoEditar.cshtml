@@ -96,16 +96,17 @@
                         @(Model.Id_inmueble > 0 ? "Actualizar" : "Guardar")
                     </button>
 
-                    @if (!string.IsNullOrEmpty(Model.Imagen))
-                    {
-                        <form asp-action="EliminarImagen" asp-controller="Inmueble" method="post" class="ms-3">
-                            <input type="hidden" name="Id_inmueble" value="@Model.Id_inmueble" />
-                            <input type="hidden" name="Imagen" value="@Model.Imagen" />
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Eliminar imagen</button>
-                        </form>
-                    }
                 </div>
             </form>
+
+            @if (!string.IsNullOrEmpty(Model.Imagen))
+            {
+                <form asp-action="EliminarImagen" asp-controller="Inmueble" method="post" class="ms-3">
+                    <input type="hidden" asp-for="Id_inmueble" value="@Model.Id_inmueble" />
+                    <input type="hidden" asp-for="Imagen" value="@Model.Imagen" />
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Eliminar imagen</button>
+                </form>
+            }
         </div>
     </div>
 </div>
@@ -140,5 +141,6 @@
                 }
             });
         });
-       
-    </script>}
+
+    </script>
+}

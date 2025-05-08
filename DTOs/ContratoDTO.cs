@@ -16,6 +16,8 @@ namespace StiegerInmobiliaria.DTOs
 
         public DateTime Fecha_fin { get; set; }
 
+        public DateTime? Fecha_fin_original { get; set; }
+
         public UsuarioDTO? CreadoPor { get; set; }
 
         public UsuarioDTO? FinalizadoPor { get; set; }

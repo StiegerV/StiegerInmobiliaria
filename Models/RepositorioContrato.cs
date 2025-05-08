@@ -11,8 +11,8 @@ namespace StiegerInmobiliaria.Models
         {
             this.abrirConexion();
             int id = -1;
-            string sql = @"INSERT INTO contrato( monto,fecha_inicio,fecha_fin,id_inmueble,id_inquilino,creado_por) 
-            VALUES (@monto,@fecha_inicio,@fecha_fin,@id_inmueble,@id_inquilino,1)";
+            string sql = @"INSERT INTO contrato( monto,fecha_inicio,fecha_fin,id_inmueble,id_inquilino,creado_por,fecha_fin_original) 
+            VALUES (@monto,@fecha_inicio,@fecha_fin,@id_inmueble,@id_inquilino,@fecha_fin_original,1)";
             //formateo de fehcas para mysql
             string inicio = c.FechaInicio.ToString("yyyy-MM-dd");
             string fin = c.FechaFin.ToString("yyyy-MM-dd");
@@ -26,6 +26,7 @@ namespace StiegerInmobiliaria.Models
             comando.Parameters.AddWithValue("@fecha_fin", fin);
             comando.Parameters.AddWithValue("@id_inmueble", c.Id_inmueble);
             comando.Parameters.AddWithValue("@id_inquilino", c.Id_inquilino);
+            comando.Parameters.AddWithValue("@fecha_fin_original", c.FechaFin);
             id = Convert.ToInt32(comando.ExecuteScalar());
             c.Id_contrato = id;
             this.cerrarConexion();
@@ -58,8 +59,9 @@ namespace StiegerInmobiliaria.Models
             this.abrirConexion();
             int columnasAfectadas = -1;
             string sql = @"*UPDATE `contrato` 
-            SET monto=@monto,fecha_inicio=@fecha_inicio,fecha_fin=@fecha_fin,id_inmueble=@id_inmueble,id_inquilino=@id_inquilino 
-            WHERE id_contrato=@id_contrato";
+                            SET monto=@monto,fecha_inicio=@fecha_inicio,fecha_fin=@fecha_fin,
+                            id_inmueble=@id_inmueble,id_inquilino=@id_inquilino
+                            WHERE id_contrato=@id_contrato";
             string inicio = c.FechaInicio.ToString("yyyy-MM-dd");
             string fin = c.FechaFin.ToString("yyyy-MM-dd");
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
@@ -96,6 +98,7 @@ namespace StiegerInmobiliaria.Models
                 c.Id_inquilino = lector.GetInt16("id_inquilino");
                 c.Creador_por = lector.GetInt16("creado_por");
                 c.Terminado_por = lector.IsDBNull(lector.GetOrdinal("terminado_por")) ? null : lector.GetInt16("terminado_por");
+                c.Fecha_fin_original = lector.IsDBNull(lector.GetOrdinal("fecha_fin_original")) ? null : lector.GetDateTime("fecha_fin_original");
                 contratos.Add(c);
             }
             this.cerrarConexion();

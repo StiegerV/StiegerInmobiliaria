@@ -32,7 +32,7 @@
                 <td>@inquilino.Id_inquilino</td>
                 <td>@inquilino.Nombre</td>
                 <td>@inquilino.Apellido</td>
-                <td>
+                <td style="display: flex; flex-direction: row; justify-content: space-around;">
                     <form action="@Url.Action("Eliminar", "Inquilino")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@inquilino.Id_inquilino" />
                         <button type="submit" class="btn btn-danger btn-sm"

@@ -31,7 +31,7 @@
                 <td>@propietario.Id_propietario</td>
                 <td>@propietario.Nombre</td>
                 <td>@propietario.Apellido</td>
-                <td>
+                <td style="display: flex; flex-direction: row; justify-content: space-around;">
                     <form action="@Url.Action("Eliminar", "Propietario")" method="post" style="display:inline;">
                         <input type="hidden" name="id" value="@propietario.Id_propietario" />
                         <button type="submit" class="btn btn-danger btn-sm"
@@ -41,10 +41,11 @@
                     <a href="@Url.Action("NuevoEditar", "Propietario", new { id = propietario.Id_propietario })">
                         <button class="btn btn-warning btn-sm">Editar</button>
                     </a>
-
+                    <div>
                     <a href="@Url.Action("Detalle", "Propietario", new { id = propietario.Id_propietario })">
                         <button class="btn btn-primary btn-sm">Detalle</button>
                     </a>
+                    </div>
                 </td>
             </tr>
         }

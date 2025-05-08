@@ -34,6 +34,7 @@ public class ContratoController : Controller
             contratoDTO.Id_contrato = i.Id_contrato;
             contratoDTO.Fecha_inicio = i.FechaInicio;
             contratoDTO.Fecha_fin = i.FechaFin;
+            contratoDTO.Fecha_fin_original=i.Fecha_fin_original;
 
             var inquilinoDTO = repositorioInquilino.traerIdDTO(i.Id_inquilino);
             contratoDTO.Inquilino = inquilinoDTO;
@@ -143,6 +144,7 @@ public class ContratoController : Controller
         {
             repositorio.Alta(contrato);
             TempData["Mensaje"] = "Contrato creado exitosamente.";
+            
             return RedirectToAction("Indice");
         }
         catch (System.Exception)
