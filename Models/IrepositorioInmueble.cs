@@ -3,7 +3,7 @@ using StiegerInmobiliaria.DTOs;
 namespace StiegerInmobiliaria.Models
 {
 
-    interface IrepositorioInmueble : iRepositorio<InmuebleModel>
+    public interface IrepositorioInmueble : iRepositorio<InmuebleModel>
     {
         public int ContratoActivo(int id);
 
@@ -19,8 +19,14 @@ namespace StiegerInmobiliaria.Models
         public InmuebleDTO TraerIdDTO(int id);
 
         public List<InmuebleDTO> traerDesocupados(string inicio, string fin);
+
+        public List<InmuebleDTO> InmueblesxPropietario(int id);
+
+        public List<InmuebleModel> ListarXDisponible(string estado, int paginaNro, int tamPagina);
+
+        public int TraerCantidadxEstado(string estado);
     }
 
-    
+
 
 }

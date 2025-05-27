@@ -1,0 +1,72 @@
+@model UsuarioModel
+
+@{
+    ViewBag.Title = Model.Id_usuario > 0 ? $"Editar a{Model.Nombre}" : "Nuevo usuario";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h2 class="card-title text-center text-primary mb-4">@ViewBag.Title</h2>
+
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="@(TempData["estiloAviso"] ?? "alert alert-info")">
+                    @TempData["Mensaje"]
+                </div>
+            }
+
+            <form asp-action="@(Model.Id_usuario > 0 ? "Editar" : "Nuevo")" asp-controller="Usuario" method="post"
+                enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="Id_usuario" value="@Model.Id_usuario" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nombre" class="form-label">Nombre/Nick</label>
+                        <input asp-for="Nombre" class="form-control" required="@(Model.Id_usuario == 0)" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Contraseña" class="form-label">Contraseña</label>
+                        <input type="password" asp-for="Contraseña" class="form-control" required="@(Model.Id_usuario == 0)" />
+                    </div>
+
+                    @if (User.IsInRole("administrador"))
+                    {
+                        <div class="col-md-6">
+                            <label asp-for="Rol" class="form-label">Rol</label>
+                            <select asp-for="Rol" class="form-select">
+                                <option value="empleado" selected>Empleado</option>
+                                <option value="administrador">administrador</option>
+                            </select>
+                        </div>
+                    }
+
+                    <div class="col-md-6">
+                        <label asp-for="ImgArchivo" class="form-label">Foto de perfil</label>
+                        @if (!string.IsNullOrEmpty(Model.Imagen))
+                        {
+                            <div class="mb-2">
+                                <img src="@Model.Imagen" alt="no cargo bien la imagen :(" class="img-thumbnail"
+                                    style="max-width: 200px;" />
+                            </div>
+                            <label asp-for="ImgArchivo" class="form-label">Editar foto de perfil</label>
+                            <input type="file" asp-for="ImgArchivo" class="form-control" accept="image/*" />
+                        }
+                        else
+                        {
+                            <input type="file" asp-for="ImgArchivo" class="form-control" accept="image/*" />
+                        }
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-primary px-4">
+                        @(Model.Id_usuario > 0 ? "Actualizar" : "Guardar")
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

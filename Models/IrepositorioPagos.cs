@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Forms;
 using StiegerInmobiliaria.DTOs;
 
 namespace StiegerInmobiliaria.Models
@@ -7,7 +8,11 @@ namespace StiegerInmobiliaria.Models
 
         public PagoDTO traerIdDTO(int id);
 
-         public List<PagoDTO> TraerTodosDTO();
+         public List<PagoDTO> TraerTodosDTO(int paginaNro, int tamPagina);
+
+         public List<PagoModel> IdPagosXFechaFin(string fecha,int idContrato);
+
+         public int BajaUser(int id,int usr);
 
     }
 }

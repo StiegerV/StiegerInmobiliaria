@@ -10,12 +10,14 @@
         @TempData["Mensaje"]
     </div>
 }
-
-<form action="@Url.Action("Eliminar", "Propietario")" method="post" style="display:inline;">
-    <input type="hidden" name="id" value="@Model.Id_propietario" />
-    <button type="submit" class="btn btn-danger btn-sm rounded"
-        onclick="return confirm('¿Eliminar al propietario?')">Eliminar</button>
-</form>
+@if (User.IsInRole("administrador"))
+{
+    <form action="@Url.Action("Eliminar", "Propietario")" method="post" style="display:inline;">
+        <input type="hidden" name="id" value="@Model.Id_propietario" />
+        <button type="submit" class="btn btn-danger btn-sm rounded"
+            onclick="return confirm('¿Eliminar al propietario?')">Eliminar</button>
+    </form>
+}
 
 <a href="@Url.Action("NuevoEditar", "Propietario", new { id = Model.Id_propietario })">
     <button class="btn btn-warning btn-sm rounded">Editar</button>
@@ -34,7 +36,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>@Model.Id_propietario</td>
+            <td id="Id">@Model.Id_propietario</td>
             <td>@Model.Dni</td>
             <td>@Model.Nombre</td>
             <td>@Model.Apellido</td>
@@ -43,3 +45,47 @@
         </tr>
     </tbody>
 </table>
+
+
+<button id="ListarInmuebles" class="btn btn-primary">Listar inmuebles</button>
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="modalInmuebles" tabindex="-1" aria-labelledby="modalInmueblesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalInmueblesLabel">Inmuebles del propietario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="modal-body-inmuebles">
+                <!-- Contenido cargado con JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#ListarInmuebles').click(function () {
+        $.ajax({
+            url: `/Inmueble/InmueblesxPropietario?id=${$('#Id').html()}`,
+            method: 'GET',
+            success: function (data) {
+                let html = "<ul class='list-group'>";
+                for (const i of data) {
+                    html += `<li class='list-group-item'>
+                        <strong>${i.tipo}</strong> - ${i.direccion} ($${i.monto})
+                    </li>`;
+                }
+                html += "</ul>";
+                $('#modal-body-inmuebles').html(html);
+                let modal = new bootstrap.Modal(document.getElementById('modalInmuebles'));
+                modal.show();
+            },
+            error: function () {
+                $('#modal-body-inmuebles').html("<p class='text-danger'>Error al obtener los inmuebles.</p>");
+                let modal = new bootstrap.Modal(document.getElementById('modalInmuebles'));
+                modal.show();
+            }
+        });
+    });
+</script>

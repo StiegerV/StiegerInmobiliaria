@@ -21,6 +21,10 @@ namespace StiegerInmobiliaria.Models
 
             return id_contrato;
         }
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
+
         public int Alta(InmuebleModel i)
         {
             this.abrirConexion();
@@ -98,11 +102,12 @@ namespace StiegerInmobiliaria.Models
 
         }
 
-        public List<InmuebleModel> TraerTodos()
+        public List<InmuebleModel> TraerTodos(int paginaNro, int tamPagina)
         {
             List<InmuebleModel> inmuebles = new List<InmuebleModel>();
             this.abrirConexion();
-            string sql = "SELECT * FROM `inmueble` WHERE `activo`=1";
+            string sql = @$"SELECT * FROM `inmueble` WHERE `activo`=1
+            LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.CommandType = CommandType.Text;
             var lector = comando.ExecuteReader();
@@ -126,36 +131,6 @@ namespace StiegerInmobiliaria.Models
             return inmuebles;
         }
 
-        public InmuebleModel TraerId(int id)
-        {
-            this.abrirConexion();
-            string sql = @"SELECT `id_propietario`, `direccion`, `uso`, `tipo`, `ambientes`, `cordenadas`, `precio`, `disponible`, `activo`, `imagen` 
-      FROM `inmueble` WHERE `id_inmueble`=@id_inmueble";
-            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-            comando.Parameters.AddWithValue("@id_inmueble", id);
-            comando.CommandType = CommandType.Text;
-            var lector = comando.ExecuteReader();
-            InmuebleModel i = new InmuebleModel();
-            if (lector.Read())
-            {
-                i.Id_inmueble = id;
-                i.Id_propietario = lector.GetInt16("id_propietario");
-                i.Direccion = lector.IsDBNull(lector.GetOrdinal("direccion")) ? null : lector.GetString("direccion");
-                i.Uso = lector.IsDBNull(lector.GetOrdinal("uso")) ? null : lector.GetString("uso");
-                i.Tipo = lector.IsDBNull(lector.GetOrdinal("tipo")) ? null : lector.GetString("tipo");
-                i.Ambientes = lector.IsDBNull(lector.GetOrdinal("ambientes")) ? -1 : lector.GetInt32("ambientes");
-                i.Cordenadas = lector.IsDBNull(lector.GetOrdinal("cordenadas")) ? null : lector.GetString("cordenadas");
-                i.Precio = lector.IsDBNull(lector.GetOrdinal("precio")) ? -1 : lector.GetDouble("precio");
-                i.Disponible = lector.IsDBNull(lector.GetOrdinal("disponible")) ? null : lector.GetString("disponible");
-                i.Imagen = lector.IsDBNull(lector.GetOrdinal("imagen")) ? null : lector.GetString("imagen");
-            }
-            else
-            {
-                i.Id_inmueble = -1;
-            }
-            this.cerrarConexion();
-            return i;
-        }
 
         public int EliminarImagen(InmuebleModel i)
         {
@@ -172,6 +147,9 @@ namespace StiegerInmobiliaria.Models
             return columnasAfectadas;
         }
 
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
 
         /// <summary>
         /// permite conseguir el dto del propietario a traves del inmueble id asociado al inmueble
@@ -225,11 +203,11 @@ namespace StiegerInmobiliaria.Models
             return i;
         }
         public List<InmuebleDTO> traerDesocupados(string inicio, string fin)
-{
-    var desocupados = new List<InmuebleDTO>();
-    this.abrirConexion();
+        {
+            var desocupados = new List<InmuebleDTO>();
+            this.abrirConexion();
 
-    string sql = @"
+            string sql = @"
         SELECT i.id_inmueble, i.tipo, i.direccion, i.precio
         FROM inmueble AS i
         WHERE i.id_inmueble NOT IN (
@@ -240,27 +218,170 @@ namespace StiegerInmobiliaria.Models
               AND activo = 1
         )";
 
-    MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-    comando.Parameters.AddWithValue("@fechaInicio", inicio);
-    comando.Parameters.AddWithValue("@fechaFin", fin);
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@fechaInicio", inicio);
+            comando.Parameters.AddWithValue("@fechaFin", fin);
 
-    var lector = comando.ExecuteReader();
-    while (lector.Read())
-    {
-        var i = new InmuebleDTO
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                var i = new InmuebleDTO
+                {
+                    Id_inmueble = lector.GetInt16("id_inmueble"),
+                    Tipo = lector.GetString("tipo"),
+                    Direccion = lector.GetString("direccion"),
+                    Monto = lector.GetFloat("precio")
+                };
+
+                desocupados.Add(i);
+            }
+
+            this.cerrarConexion();
+            return desocupados;
+        }
+
+        public InmuebleModel TraerId(int id)
         {
-            Id_inmueble = lector.GetInt16("id_inmueble"),
-            Tipo = lector.GetString("tipo"),
-            Direccion = lector.GetString("direccion"),
-            Monto = lector.GetFloat("precio")
-        };
+            this.abrirConexion();
+            string sql = @"SELECT `id_propietario`, `direccion`, `uso`, `tipo`, `ambientes`, `cordenadas`, `precio`, `disponible`, `activo`, `imagen` 
+      FROM `inmueble` WHERE `id_inmueble`=@id_inmueble";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id_inmueble", id);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+            InmuebleModel i = new InmuebleModel();
+            if (lector.Read())
+            {
+                i.Id_inmueble = id;
+                i.Id_propietario = lector.GetInt16("id_propietario");
+                i.Direccion = lector.IsDBNull(lector.GetOrdinal("direccion")) ? null : lector.GetString("direccion");
+                i.Uso = lector.IsDBNull(lector.GetOrdinal("uso")) ? null : lector.GetString("uso");
+                i.Tipo = lector.IsDBNull(lector.GetOrdinal("tipo")) ? null : lector.GetString("tipo");
+                i.Ambientes = lector.IsDBNull(lector.GetOrdinal("ambientes")) ? -1 : lector.GetInt32("ambientes");
+                i.Cordenadas = lector.IsDBNull(lector.GetOrdinal("cordenadas")) ? null : lector.GetString("cordenadas");
+                i.Precio = lector.IsDBNull(lector.GetOrdinal("precio")) ? -1 : lector.GetDouble("precio");
+                i.Disponible = lector.IsDBNull(lector.GetOrdinal("disponible")) ? null : lector.GetString("disponible");
+                i.Imagen = lector.IsDBNull(lector.GetOrdinal("imagen")) ? null : lector.GetString("imagen");
+            }
+            else
+            {
+                i.Id_inmueble = -1;
+            }
+            this.cerrarConexion();
+            return i;
+        }
 
-        desocupados.Add(i);
-    }
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
+        public int TraerCantidad()
+        {
+            this.abrirConexion();
+            string sql = @"SELECT COUNT(`id_inmueble`) AS cantidad FROM `inmueble` WHERE `activo`=1";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
 
-    this.cerrarConexion();
-    return desocupados;
-}
+            int cantidad = 0;
+
+            if (lector.Read())
+            {
+                cantidad = lector.GetInt32("cantidad");
+
+            }
+
+            this.cerrarConexion();
+            return cantidad;
+        }
+
+        public int TraerCantidadxEstado(string estado)
+        {
+            this.abrirConexion();
+            string sql = @"SELECT COUNT(`id_inmueble`) AS cantidad FROM `inmueble` WHERE `activo`=1 AND `disponible`=@estado";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            int cantidad = 0;
+
+            if (lector.Read())
+            {
+                cantidad = lector.GetInt32("cantidad");
+
+            }
+
+            this.cerrarConexion();
+            return cantidad;
+        }
+
+        public int ObtenerTotalPaginas(int tamPagina, int totalRegistros)
+        {
+            return (int)Math.Ceiling((double)totalRegistros / tamPagina);
+        }
+
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        public List<InmuebleDTO> InmueblesxPropietario(int id)
+        {
+            var lista = new List<InmuebleDTO>();
+            var sql = "SELECT `id_inmueble`,`tipo`,`direccion`,`precio` FROM `inmueble` WHERE `id_propietario`=@id";
+            this.abrirConexion();
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id);
+
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                var i = new InmuebleDTO
+                {
+                    Id_inmueble = lector.GetInt16("id_inmueble"),
+                    Tipo = lector.GetString("tipo"),
+                    Direccion = lector.GetString("direccion"),
+                    Monto = lector.GetFloat("precio")
+                };
+
+                lista.Add(i);
+            }
+
+            this.cerrarConexion();
+            return lista;
+        }
+
+
+        public List<InmuebleModel> ListarXDisponible(string estado, int paginaNro, int tamPagina)
+        {
+            List<InmuebleModel> inmuebles = new List<InmuebleModel>();
+            this.abrirConexion();
+            string sql = @$"SELECT * FROM `inmueble` WHERE `disponible`=@estado AND `activo`=1
+            LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@estado", estado);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                InmuebleModel i = new InmuebleModel();
+                i.Id_inmueble = lector.GetInt16("id_inmueble");
+                i.Id_propietario = lector.GetInt16("id_propietario");
+                i.Direccion = lector.IsDBNull(lector.GetOrdinal("direccion")) ? null : lector.GetString("direccion");
+                i.Uso = lector.IsDBNull(lector.GetOrdinal("uso")) ? null : lector.GetString("uso");
+                i.Tipo = lector.IsDBNull(lector.GetOrdinal("tipo")) ? null : lector.GetString("tipo");
+                i.Ambientes = lector.IsDBNull(lector.GetOrdinal("ambientes")) ? -1 : lector.GetInt32("ambientes");
+                i.Cordenadas = lector.IsDBNull(lector.GetOrdinal("cordenadas")) ? null : lector.GetString("cordenadas");
+                i.Precio = lector.IsDBNull(lector.GetOrdinal("precio")) ? -1 : lector.GetDouble("precio");
+                i.Disponible = lector.IsDBNull(lector.GetOrdinal("disponible")) ? null : lector.GetString("disponible");
+                i.Imagen = lector.IsDBNull(lector.GetOrdinal("imagen")) ? null : lector.GetString("imagen");
+
+                inmuebles.Add(i);
+            }
+            this.cerrarConexion();
+            return inmuebles;
+
+
+
+        }
+
 
 
 

@@ -10,10 +10,15 @@ namespace StiegerInmobiliaria.Models
 
         int Modificacion(T p);
 
-        List<T> TraerTodos();
+        List<T> TraerTodos(int paginaNro,int tamPagina);
 
 
         T TraerId(int id);
+
+        public int ObtenerTotalPaginas(int tamPagina,int totalRegistros);
+
+//total de filas de la entidad x
+        public int TraerCantidad();
 
     }
 }

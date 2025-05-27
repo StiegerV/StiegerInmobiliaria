@@ -1,0 +1,51 @@
+@model IEnumerable<UsuarioDTO>
+
+@{
+    ViewBag.Title = "Usuarios";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<table class="table table-bordered table-striped table-hover bg-white text-dark">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th>
+                <a class="btn btn-success btn-sm" asp-controller="Usuario" asp-action="NuevoEditar"
+                    asp-route-id="0">Nuevo
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usr in Model)
+        {
+            <tr>
+                <td>@usr.Nombre</td>
+                <td>@usr.Rol</td>
+                <td style="display: flex; flex-direction: row; justify-content: space-around;">
+                    <form action="@Url.Action("Eliminar", "Usuario")" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@usr.Id_usuario" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('eliminar al inquilino?')">Eliminar</button>
+                    </form>
+
+                    <a class="btn btn-primary btn-sm" asp-controller="Usuario" asp-action="Perfil"
+                        asp-route-id="@usr.Id_usuario">Detalle
+                    </a>
+
+                    <a class="btn btn-warning btn-sm" asp-controller="Usuario" asp-action="NuevoEditar"
+                        asp-route-id="@usr.Id_usuario">Editar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

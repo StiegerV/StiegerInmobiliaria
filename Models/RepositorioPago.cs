@@ -11,8 +11,8 @@ namespace StiegerInmobiliaria.Models
             this.abrirConexion();
             int id = -1;
             string sql =
-                @"INSERT INTO `pago`(`id_contrato`, `monto`, `fecha`, `observacion`, `estado`)
-                VALUES (@idContrato,@monto,@fecha,@observacion,@estado);
+                @"INSERT INTO `pago`(`id_contrato`, `monto`, `fecha`, `observacion`, `estado`,`creado_por`)
+                VALUES (@idContrato,@monto,@fecha,@observacion,@estado,@creado_por);
                SELECT LAST_INSERT_ID();";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
@@ -22,6 +22,7 @@ namespace StiegerInmobiliaria.Models
             comando.Parameters.AddWithValue("@fecha", p.Fecha);
             comando.Parameters.AddWithValue("@observacion", p.Observacion);
             comando.Parameters.AddWithValue("@estado", p.Estado);
+            comando.Parameters.AddWithValue("@creado_por", p.Creado_por);
             comando.CommandType = CommandType.Text;
             id = Convert.ToInt32(comando.ExecuteScalar());
             p.Id_pago = id;
@@ -29,6 +30,25 @@ namespace StiegerInmobiliaria.Models
 
             return id;
         }
+
+        public int BajaUser(int id, int usr)
+        {
+            this.abrirConexion();
+            int columnasAfectadas = -1;
+            string sql = @"UPDATE `pago` SET `estado`='anulado',`terminado_por`=@terminado_por WHERE `id_pago`=@id";
+
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id);
+            comando.Parameters.AddWithValue("@terminado_por", usr);
+            comando.CommandType = CommandType.Text;
+            columnasAfectadas = Convert.ToInt32(comando.ExecuteNonQuery());
+
+            this.cerrarConexion();
+
+            return columnasAfectadas;
+        }
+
+
 
         public int Baja(int id)
         {
@@ -66,7 +86,7 @@ namespace StiegerInmobiliaria.Models
             return columnasAfectadas;
         }
 
-        public List<PagoModel> TraerTodos()
+        public List<PagoModel> TraerTodos(int paginaNro, int tamPagina)
         {
             var pagos = new List<PagoModel>();
 
@@ -122,11 +142,6 @@ namespace StiegerInmobiliaria.Models
             return p;
         }
 
-/*
-,i.id_inquilino,i.apellido,m.id_inmueble ,m.tipo
-                    JOIN inquilino as i on c.id_inquilino=i.id_inquilino
-                    JOIN inmueble as m on c.id_inmueble=m.id_inmueble
-*/
         public PagoDTO traerIdDTO(int id)
         {
             this.abrirConexion();
@@ -165,17 +180,19 @@ namespace StiegerInmobiliaria.Models
             return p;
         }
 
-        public List<PagoDTO> TraerTodosDTO()
+        public List<PagoDTO> TraerTodosDTO(int paginaNro, int tamPagina)
         {
             var pagos = new List<PagoDTO>();
 
             this.abrirConexion();
             string sql =
-                @"SELECT `id_pago`,c.id_contrato,p.monto,`fecha`,`observacion`,`estado`,i.id_inquilino,i.apellido,m.id_inmueble ,m.tipo
+                @$"SELECT `id_pago`,c.id_contrato,p.monto,`fecha`,`observacion`,`estado`,i.id_inquilino,i.apellido,m.id_inmueble ,m.tipo
                     FROM `pago` as p
                     JOIN contrato as c ON p.id_contrato=c.id_contrato
                     JOIN inquilino as i on c.id_inquilino=i.id_inquilino
-                    JOIN inmueble as m on c.id_inmueble=m.id_inmueble";
+                    JOIN inmueble as m on c.id_inmueble=m.id_inmueble
+                    WHERE `estado`!= 'anulado'
+                    LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.CommandType = CommandType.Text;
             var lector = comando.ExecuteReader();
@@ -201,5 +218,56 @@ namespace StiegerInmobiliaria.Models
 
 
 
+        //solo trae id y observacion
+        public List<PagoModel> IdPagosXFechaFin(string fecha, int idContrato)
+        {
+            var pagos = new List<PagoModel>();
+
+            this.abrirConexion();
+            string sql =
+                @"SELECT p.id_pago,p.observacion FROM `pago` as p WHERE `id_contrato`=@id and `fecha`>@fecha";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", idContrato);
+            comando.Parameters.AddWithValue("@fecha", fecha);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                var p = new PagoModel();
+                p.Id_pago = lector.GetInt16("id_pago");
+                p.Observacion = lector.GetString("observacion");
+                pagos.Add(p);
+            }
+            this.cerrarConexion();
+
+
+            return pagos;
+        }
+
+        public int TraerCantidad()
+        {
+            this.abrirConexion();
+            string sql = @"SELECT COUNT(`id_pago`) AS cantidad FROM `pago` WHERE `estado`!='anulado'";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            int cantidad = 0;
+
+            if (lector.Read())
+            {
+                cantidad = lector.GetInt32("cantidad");
+
+            }
+
+            this.cerrarConexion();
+            return cantidad;
+        }
+
+
+        public int ObtenerTotalPaginas(int tamPagina, int totalRegistros)
+        {
+            return (int)Math.Ceiling((double)totalRegistros / tamPagina);
+        }
     }
 }

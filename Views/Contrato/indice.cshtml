@@ -58,12 +58,37 @@
                         </a>
                     </div>
 
+                    @if (User.IsInRole("administrador"))
+                    {
+                        <a href="@Url.Action("Cancelar", "Contrato", new { id = i.Id_contrato })">
+                            <button class="btn btn-outline-danger btn-sm">Cancelar</button>
+                        </a>
+                    }
 
-                    <a href="@Url.Action("Cancelar", "Contrato", new { id = i.Id_contrato })">
-                        <button class="btn btn-outline-danger btn-sm">Cancelar</button>
-                    </a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<nav aria-label="Paginación">
+    <ul class="pagination justify-content-center mt-4">
+
+        <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Indice", new { pagina = ViewBag.PaginaActual - 1 })"
+                tabindex="-1">Anterior</a>
+        </li>
+
+
+        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+        {
+            <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Indice", new { pagina = i })">@i</a>
+            </li>
+        }
+
+
+        <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Indice", new { pagina = ViewBag.PaginaActual + 1 })">Siguiente</a>
+        </li>
+    </ul>
+</nav>

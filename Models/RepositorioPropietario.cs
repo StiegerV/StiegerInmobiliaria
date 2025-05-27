@@ -70,12 +70,13 @@ namespace StiegerInmobiliaria.Models
             return columnasAfectadas;
         }
 
-        public List<PropietarioModel> TraerTodos()
+        public List<PropietarioModel> TraerTodos(int paginaNro, int tamPagina)
         {
             List<PropietarioModel> propietarios = new List<PropietarioModel>();
 
             this.abrirConexion();
-            string sql = @"SELECT * FROM propietario WHERE activo=1";
+            string sql = @$"SELECT * FROM propietario WHERE activo=1
+            LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
             comando.CommandType = CommandType.Text;
             var lector = comando.ExecuteReader();
@@ -179,6 +180,32 @@ namespace StiegerInmobiliaria.Models
             this.cerrarConexion();
 
             return p;
+        }
+
+        public int TraerCantidad()
+        {
+            this.abrirConexion();
+            string sql = @"SELECT COUNT(`id_propietario`) AS cantidad FROM `propietario` WHERE `activo`=1";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            int cantidad = 0;
+
+            if (lector.Read())
+            {
+                cantidad = lector.GetInt32("cantidad");
+
+            }
+
+            this.cerrarConexion();
+            return cantidad;
+        }
+
+
+        public int ObtenerTotalPaginas(int tamPagina, int totalRegistros)
+        {
+            return (int)Math.Ceiling((double)totalRegistros / tamPagina);
         }
     }
 }

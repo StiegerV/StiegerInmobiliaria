@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Acceso restringido";
+}
+
+<div class="container mt-5 text-center">
+    <h1 class="display-4 text-danger mb-4">Acceso restringido</h1>
+    <p class="lead">Este módulo requiere autorización especial.</p>
+</div>
+
+<script>
+let audioYaReproducido = false;
+
+function musiquita() {
+    if (audioYaReproducido) return;
+    audioYaReproducido = true;
+
+    const audio = new Audio('/vibes/TeamFortress2IntruderAlert.mp3');
+    audio.volume=0.6;
+    audio.play().catch(err => {
+        console.warn("No se pudo reproducir el audio:", err);
+    });
+}
+
+
+$(document).one('scroll', musiquita);
+$(document).one('click', musiquita);
+$(document).one('keydown', musiquita);
+</script>
+

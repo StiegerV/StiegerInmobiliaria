@@ -16,7 +16,7 @@
         </div>
     }
 
-@if (true)
+@if (User.IsInRole("administrador"))
 {
         <div class="d-flex justify-content-center gap-2 mb-3">
         <form action="@Url.Action("Eliminar", "Pago")" method="post"

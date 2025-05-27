@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 using StiegerInmobiliaria.DTOs;
-using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
+[Authorize]
 public class ContratoController : Controller
 {
     private readonly iRepositorioContrato repositorio;
@@ -13,44 +15,32 @@ public class ContratoController : Controller
 
     private readonly IrepositorioPagos repositorioPago;
 
-    public ContratoController()
+    public ContratoController(iRepositorioContrato con, IrepositorioInmueble inm, IrepositorioInquilino inq, IrepositorioPropietario prop, IrepositorioPagos pag)
     {
-        repositorio = new RepositorioContrato();
-        repositorioInmueble = new RepositorioInmueble();
-        repositorioInquilino = new RepositorioInquilino();
-        repositorioPropietario = new RepositorioPropietario();
-        repositorioPago = new RepositorioPago();
+        repositorio = con;
+        repositorioInmueble = inm;
+        repositorioInquilino = inq;
+        repositorioPropietario = prop;
+        repositorioPago = pag;
     }
 
 
-    public ActionResult Indice()
+    public ActionResult Indice(int pagina = 1)
     {
-        var listaContratos = new List<ContratoDTO>();
-        //cambiar a join en tabla
-        foreach (var i in repositorio.TraerTodos())
-        {
+        int tamPagina = 5;
+        var contratos = repositorio.TraerTodosDTO(pagina, tamPagina);
+        
 
-            var contratoDTO = new ContratoDTO();
-            contratoDTO.Id_contrato = i.Id_contrato;
-            contratoDTO.Fecha_inicio = i.FechaInicio;
-            contratoDTO.Fecha_fin = i.FechaFin;
-            contratoDTO.Fecha_fin_original = i.Fecha_fin_original;
+        ViewBag.PaginaActual = pagina;
+        ViewBag.TamPagina = tamPagina;
+        var totalRegistros = repositorio.TraerCantidad();
+        ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
 
-            var inquilinoDTO = repositorioInquilino.traerIdDTO(i.Id_inquilino);
-            contratoDTO.Inquilino = inquilinoDTO;
-
-            var propietarioDTO = repositorioInmueble.TraerIdPropietarioDTO(i.Id_inmueble);
-            contratoDTO.Propietario = propietarioDTO;
-
-            contratoDTO.Inmueble = repositorioInmueble.TraerIdDTO(i.Id_inmueble);
-            listaContratos.Add(contratoDTO);
-        }
-
-
-        return View(listaContratos);
+        return View(contratos);
     }
 
 
+    [Authorize(Policy = "administrador")]
     public ActionResult Eliminar(int id)
     {
         int columnas = repositorio.Baja(id);
@@ -76,17 +66,25 @@ public class ContratoController : Controller
 
     public ActionResult CancelarContrato(CancelarDTO c)
     {
-        Console.WriteLine("test");
         var OG = repositorio.TraerId(c.id_contrato);
 
-
+        //calculo de multa
         int mesesTotales = ((OG.FechaFin.Year - OG.FechaInicio.Year) * 12) + OG.FechaFin.Month - OG.FechaInicio.Month;
         int mesesCumplidos = ((c.fechaCancelacion.Year - OG.FechaInicio.Year) * 12) + c.fechaCancelacion.Month - OG.FechaInicio.Month;
         int mesesMulta = mesesCumplidos < mesesTotales / 2 ? 2 : 1;
         float multa = OG.Monto * mesesMulta;
-
+        //quien cancelo y modificacion en bd
         OG.FechaFin = c.fechaCancelacion;
-        repositorio.Modificacion(OG);
+        int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        OG.Terminado_por = idUser;
+        repositorio.Cancelar(OG);
+        //cancelacion de pagos de los meses que vienen
+        var pagosAcancelar = repositorioPago.IdPagosXFechaFin(OG.FechaFin.ToString("yyyy-MM-dd"), OG.Id_contrato);
+        foreach (var item in pagosAcancelar)
+        {
+            item.Estado = "anulado";
+            repositorioPago.Modificacion(item);
+        }
         var p = new PagoModel();
         p.Id_contrato = c.id_contrato;
         p.Monto = multa;
@@ -142,17 +140,23 @@ public class ContratoController : Controller
     {
         try
         {
-
-            int id=repositorio.Alta(c);
+            int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            c.Creador_por = idUser;
+            int id = repositorio.Alta(c);
+            //cuanto pagos hay que hacer
             int mesesTotales = ((c.FechaFin.Year - c.FechaInicio.Year) * 12) + c.FechaFin.Month - c.FechaInicio.Month;
             var fecha = c.FechaInicio;
+            //generacion de pagos
             for (int i = 0; i < mesesTotales; i++)
             {
                 var p = new PagoModel();
                 p.Id_contrato = id;
                 p.Monto = c.Monto;
                 p.Fecha = fecha;
-                p.Observacion = $"Pago {fecha.Month}";
+
+                string[] meses = {"enero", "febrero", "marzo", "abril", "mayo", "junio",
+                                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"};
+                p.Observacion = $"Pago {meses[fecha.Month - 1]}";
                 p.Estado = "en proceso";
                 repositorioPago.Alta(p);
                 fecha = fecha.AddMonths(1);

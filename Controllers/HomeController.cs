@@ -1,9 +1,12 @@
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 
 namespace StiegerInmobiliaria.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -13,12 +16,20 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [AllowAnonymous]
     public IActionResult Index()
     {
+
         return View();
     }
 
     public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    [AllowAnonymous]
+    public ActionResult Restringido()
     {
         return View();
     }

@@ -1,26 +1,41 @@
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 using StiegerInmobiliaria.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StiegerInmobiliaria.Controllers
 {
+    [Authorize]
     public class InmuebleController : Controller
     {
         private readonly IrepositorioInmueble repositorio;
         private readonly IrepositorioPropietario repositorioPropietario;
 
-        public InmuebleController()
+        public InmuebleController(IrepositorioInmueble repo, IrepositorioPropietario rep)
         {
-            repositorio = new RepositorioInmueble();
-            repositorioPropietario = new RepositorioPropietario();
+            repositorio = repo;
+            repositorioPropietario = rep;
         }
 
-        public ActionResult Indice()
+        public ActionResult Indice(int pagina = 1)
         {
-            var inmuebles = repositorio.TraerTodos();
+            int tamPagina = 5;
+            var inmuebles = repositorio.TraerTodos(pagina, tamPagina);
+            var totalRegistros = repositorio.TraerCantidad();
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TamPagina = tamPagina;
+            ViewBag.Accion = "Indice";
+            ViewBag.Title = "Inmuebles";
+
+            ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
             return View(inmuebles);
         }
 
+
+
+
+        [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
 
@@ -52,7 +67,6 @@ namespace StiegerInmobiliaria.Controllers
 
         public ActionResult NuevoEditar(int id)
         {
-            ViewBag.propietarios = repositorioPropietario.TraerTodos();
             InmuebleModel inmueble = new InmuebleModel();
             if (id > 0)
             {
@@ -76,7 +90,7 @@ namespace StiegerInmobiliaria.Controllers
 
             if (archivo != null)
             {
-                if (!string.IsNullOrEmpty(imagenOriginal) && !imagenOriginal.Equals(archivo))
+                if (!string.IsNullOrEmpty(imagenOriginal) && archivo.FileName != Path.GetFileName(imagenOriginal))
                 {
                     EliminarArchivoServer(imagenOriginal);
                 }
@@ -101,6 +115,41 @@ namespace StiegerInmobiliaria.Controllers
             TempData["Mensaje"] = $"Inmueble creado";
 
             return RedirectToAction("Indice");
+        }
+
+
+        public ActionResult InmueblesxPropietario(int id)
+        {
+
+            try
+            {
+                var lista = repositorio.InmueblesxPropietario(id);
+                return Json(lista);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+
+        }
+
+        public ActionResult ListarXDisponible(string estado, int pagina = 1)
+        {
+            int tamPagina = 5;
+            var inmuebles = repositorio.ListarXDisponible(estado, pagina, tamPagina);
+            var totalRegistros = repositorio.TraerCantidad();
+
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TamPagina = tamPagina;
+            ViewBag.Accion = "ListarXDisponible";
+            ViewBag.Estado = estado;
+            ViewBag.Title = $"Inmuebles {estado}";
+
+            ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
+
+            return View("indice", inmuebles);
         }
 
 
@@ -181,6 +230,8 @@ namespace StiegerInmobiliaria.Controllers
 
             return url;
         }
+        //---------------------------------------------------------------------------
+
 
     }
 }

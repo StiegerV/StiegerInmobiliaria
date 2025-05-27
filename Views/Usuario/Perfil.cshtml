@@ -1,0 +1,45 @@
+@model UsuarioModel
+
+@{
+    ViewBag.Title = $"Perfil de: {Model.Nombre}";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+
+            <h2 class="card-title text-center text-primary mb-4">@ViewBag.Title</h2>
+
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="@(TempData["estiloAviso"] ?? "alert alert-info")">
+                    @TempData["Mensaje"]
+                </div>
+            }
+
+            <a class="btn btn-warning btn-sm" asp-controller="Usuario" asp-action="NuevoEditar"
+                asp-route-id="@Model.Id_usuario">Editar
+            </a>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nick</label>
+                <p class="form-control-plaintext">@Model.Nombre</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Rol</label>
+                <p class="form-control-plaintext">@Model.Rol</p>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Imagen))
+            {
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Foto de perfil</label><br />
+                    <img src="@Model.Imagen" alt="No se pudo cargar la imagen" class="img-thumbnail"
+                        style="max-width: 200px;" />
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

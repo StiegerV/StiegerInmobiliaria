@@ -3,29 +3,43 @@
 @{
     ViewBag.Title = "Contratos";
 }
-<h2>@ViewBag.Title</h2>
 
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Mensaje"]
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <h2 class="card-title text-center text-primary mb-4">
+                Cancelar contrato
+            </h2>
+
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["Mensaje"]
+                </div>
+            }
+
+            <form asp-action="CancelarContrato" asp-controller="Contrato" method="post">
+                <input type="hidden" asp-for="id_contrato" />
+
+                <div class="mb-3">
+                    <label asp-for="fechaCancelacion" class="form-label">
+                        Fecha efectiva de finalización anticipada
+                    </label>
+                    <input type="date" asp-for="fechaCancelacion" class="form-control" id="FechaCancelacion" />
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-danger">
+                        Cancelar Contrato
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-}
-
-<h2 class="card-title text-center text-primary mb-4">
-    Cancelar contrato
-</h2>
-
-<form asp-action="CancelarContrato" asp-controller="Contrato" method="post">
-    <input type="hidden" asp-for="id_contrato">
-    <label asp-for="fechaCancelacion">fecha efectiva de finalización anticipada</label>
-    <input type="date" asp-for="fechaCancelacion">
-    <button type="submit">Cancelar</button>
-</form>
-
+</div>
 
 <script>
-    const FechaFin = document.getElementById('Contrato.FechaFin');
+    const FechaCancelacion = document.getElementById('FechaCancelacion');
     const hoy = new Date().toISOString().slice(0, 10);
-    FechaFin.min = hoy;
+    FechaCancelacion.min = hoy;
 </script>

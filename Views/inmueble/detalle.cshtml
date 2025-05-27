@@ -17,19 +17,24 @@
     }
 
     <div class="d-flex justify-content-center gap-2 mb-3">
-        <form action="@Url.Action("Eliminar", "Inmueble")" method="post" onsubmit="return confirm('¿Eliminar al inmueble?');">
-            <input type="hidden" name="id" value="@Model.Id_inmueble" />
-            <button type="submit" class="btn btn-danger btn-sm rounded shadow-sm">Eliminar</button>
-        </form>
+        @if (User.IsInRole("administrador"))
+        {
+            <form action="@Url.Action("Eliminar", "Inmueble")" method="post"
+                onsubmit="return confirm('¿Eliminar al inmueble?');">
+                <input type="hidden" name="id" value="@Model.Id_inmueble" />
+                <button type="submit" class="btn btn-danger btn-sm rounded shadow-sm">Eliminar</button>
+            </form>
+        }
 
-        <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = Model.Id_inmueble })" class="btn btn-warning btn-sm rounded shadow-sm">
+        <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = Model.Id_inmueble })"
+            class="btn btn-warning btn-sm rounded shadow-sm">
             Editar
         </a>
     </div>
 
     <div class="text-center mb-4">
         <img src="@Model.Imagen" alt="Imagen del inmueble" class="img-fluid rounded shadow-sm border border-2"
-             style="max-height: 300px;" />
+            style="max-height: 300px;" />
     </div>
 
     <div class="table-responsive">
@@ -52,7 +57,7 @@
                     <td>@Model.Id_inmueble</td>
                     <td>
                         <a href="@Url.Action("Detalle", "Propietario", new { id = ViewBag.Propietario.Id_propietario })"
-                           class="text-decoration-none text-primary fw-semibold">
+                            class="text-decoration-none text-primary fw-semibold">
                             @ViewBag.Propietario.Apellido @ViewBag.Propietario.Nombre
                         </a>
                     </td>

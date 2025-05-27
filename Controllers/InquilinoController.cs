@@ -1,26 +1,35 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.Models;
 
 namespace StiegerInmobiliaria.Controllers
 {
+    [Authorize]
     public class InquilinoController : Controller
     {
         private readonly IrepositorioInquilino repositorio;
 
-        //IrepositorioPropietario repositorio
-        public InquilinoController()
+        public InquilinoController(IrepositorioInquilino repositorio)
         {
-            this.repositorio = new RepositorioInquilino();
+            this.repositorio = repositorio;
         }
 
-        //el nombre del metodo es el que devuelve la vista
-        public ActionResult Indice()
+        public ActionResult Indice(int pagina = 1)
         {
-            var inquilinos = repositorio.TraerTodos();
-            return View(inquilinos);
+            int tamPagina = 5;
+            var inmuebles = repositorio.TraerTodos(pagina, tamPagina);
+
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TamPagina = tamPagina;
+            var totalRegistros = repositorio.TraerCantidad();
+            ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
+            return View(inmuebles);
         }
+
 
         [HttpPost]
+        [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
             try

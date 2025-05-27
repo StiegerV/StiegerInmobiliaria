@@ -15,6 +15,12 @@ namespace StiegerInmobiliaria.Models
 
         public string? Estado { get; set; }
 
+        public int Creado_por { get; set; }
+
+        public int Finalizado_por { get; set; }
+
+
+
         public override string ToString()
         {
             return $"Pago ID: {Id_pago}, Contrato ID: {Id_contrato}, Monto: {Monto:C}, Fecha: {Fecha:yyyy-MM-dd}, Estado: {Estado}, Observación: {Observacion}";

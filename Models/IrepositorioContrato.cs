@@ -6,5 +6,9 @@ namespace StiegerInmobiliaria.Models
 
         public List<ContratoJSON> Busqueda(string dato);
 
+        public int Cancelar(ContratoModel c);
+
+        public List<ContratoDTO> TraerTodosDTO(int paginaNro, int tamPagina);
+
     }
 }

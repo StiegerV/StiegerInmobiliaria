@@ -1,10 +1,13 @@
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StiegerInmobiliaria.DTOs;
 using StiegerInmobiliaria.Models;
 
 namespace StiegerInmobiliaria.Controllers
 {
+    [Authorize]
     public class PagoController : Controller
     {
 
@@ -12,23 +15,31 @@ namespace StiegerInmobiliaria.Controllers
         private readonly iRepositorioContrato repositorioContrato;
 
 
-        public PagoController()
+        public PagoController(IrepositorioPagos repo, iRepositorioContrato rep)
         {
-            this.repositorio = new RepositorioPago();
-            this.repositorioContrato = new RepositorioContrato();
+            this.repositorio = repo;
+            this.repositorioContrato = rep;
         }
 
 
-        public ActionResult Indice()
+        public ActionResult Indice(int pagina = 1)
         {
-            List<PagoDTO> pagos = repositorio.TraerTodosDTO();
+            int tamPagina = 5;
+            List<PagoDTO> pagos = repositorio.TraerTodosDTO(pagina, tamPagina);
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TamPagina = tamPagina;
+            var totalRegistros = repositorio.TraerCantidad();
+            ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
             return View(pagos);
         }
 
 
+        [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
-            int columnas = repositorio.Baja(id);
+            int usr = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int columnas = repositorio.BajaUser(id, usr);
             if (columnas == 1)
             {
                 TempData["Mensaje"] = "Pago eliminado exitosamente.";
@@ -65,18 +76,23 @@ namespace StiegerInmobiliaria.Controllers
         {
             try
             {
+                p.Creado_por = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
                 repositorio.Alta(p);
+                //controlar monto>0
+
                 TempData["Mensaje"] = "Pago creado exitosamente.";
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 TempData["Mensaje"] = "Error al crear pago.";
+                Console.WriteLine(ex);
 
             }
             return RedirectToAction("Indice");
         }
 
-        public ActionResult EditarPago(PagoModel p){
+        public ActionResult EditarPago(PagoModel p)
+        {
             repositorio.Modificacion(p);
 
             return RedirectToAction("Indice");

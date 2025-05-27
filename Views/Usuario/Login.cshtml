@@ -1,0 +1,31 @@
+@model UsuarioModel
+
+@{
+    ViewBag.Title = "Iniciar Sesión";
+}
+
+<h2 class="text-center text-primary mb-4">@ViewBag.Title</h2>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-danger text-center">
+        @TempData["Mensaje"]
+    </div>
+}
+
+<form asp-action="Login" asp-controller="Usuario" method="post">
+    <div style="max-width: 400px; margin: 0 auto;">
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label">Nombre de usuario</label>
+            <input asp-for="Nombre" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Contraseña" class="form-label">Contraseña</label>
+            <input asp-for="Contraseña" class="form-control" type="password" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+    </div>
+
+</form>

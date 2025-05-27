@@ -1,9 +1,7 @@
 @model IEnumerable<InmuebleModel>
 
 
-@{
-    ViewBag.Title = "Inmuebles";
-}
+
 <h2>@ViewBag.Title</h2>
 
 @if (TempData["Mensaje"] != null)
@@ -12,6 +10,17 @@
         @TempData["Mensaje"]
     </div>
 }
+
+<div class="mb-3">
+    <label for="filtroEstado" class="form-label">Búsqueda por estado</label>
+    <select name="filtroEstado" id="filtroEstado" class="form-select">
+        <option value="estado" selected disabled>Seleccione un estado</option>
+        <option value="disponible">Disponible</option>
+        <option value="suspendido">Suspendido</option>
+        <option value="otro">Otro</option>
+    </select>
+</div>
+
 
 
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
@@ -35,23 +44,79 @@
                 <td>@inmueble.Direccion</td>
                 <td>@inmueble.Uso</td>
                 <td style="display: flex; flex-direction: row; justify-content: space-around;">
-                    <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
-                        <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('eliminar al inmueble?')">Eliminar</button>
-                    </form>
+                    @if (User.IsInRole("administrador"))
+                    {
+                        <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('eliminar al usuario?')">Eliminar</button>
+                        </form>
+                    }
 
                     <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = inmueble.Id_inmueble })">
                         <button class="btn btn-warning btn-sm">Editar</button>
                     </a>
 
                     <div>
-                    <a href="@Url.Action("Detalle", "Inmueble", new { id = inmueble.Id_inmueble })">
-                        <button class="btn btn-primary btn-sm">Detalle</button>
-                    </a>
+                        <a href="@Url.Action("Detalle", "Inmueble", new { id = inmueble.Id_inmueble })">
+                            <button class="btn btn-primary btn-sm">Detalle</button>
+                        </a>
                     </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    $('#filtroEstado').on('change', function () {
+        const estado = $('#filtroEstado').val();
+
+        if (estado !== 'estado') {
+            window.location.href = `/Inmueble/ListarXDisponible?estado=${encodeURIComponent(estado)}&pagina=1`;
+        }
+    });
+</script>
+
+
+@{
+    string accion = ViewBag.Accion ?? "Indice";
+    string estado = ViewBag.Estado;
+}
+
+<nav aria-label="Paginación">
+    <ul class="pagination justify-content-center mt-4">
+
+        @{
+            string anteriorParams = $"pagina={ViewBag.PaginaActual - 1}";
+            if (accion == "ListarXDisponible")
+                anteriorParams = $"estado={estado}&{anteriorParams}";
+        }
+        <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action(accion)@($"?{anteriorParams}")" tabindex="-1">Anterior</a>
+        </li>
+
+        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+        {
+            string pageParams = $"pagina={i}";
+            if (accion == "ListarXDisponible")
+                pageParams = $"estado={estado}&{pageParams}";
+
+            <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
+                <a class="page-link" href="@Url.Action(accion)@($"?{pageParams}")">@i</a>
+            </li>
+        }
+
+        @{
+            string siguienteParams = $"pagina={ViewBag.PaginaActual + 1}";
+            if (accion == "ListarXDisponible")
+                siguienteParams = $"estado={estado}&{siguienteParams}";
+        }
+        <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action(accion)@($"?{siguienteParams}")">Siguiente</a>
+        </li>
+
+    </ul>
+</nav>
+
+

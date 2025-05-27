@@ -10,10 +10,8 @@
             <form asp-action="@(Model.Id_inmueble > 0 ? "EditarInmueble" : "NuevoInmueble")" asp-controller="Inmueble"
                 method="post" enctype="multipart/form-data">
 
-                @if (Model.Id_inmueble > 0)
-                {
-                    <input type="hidden" name="Id_inmueble" id="Id_inmueble" value="@Model.Id_inmueble" />
-                }
+
+                <input type="hidden" name="Id_inmueble" id="Id_inmueble" value="@Model.Id_inmueble" />
 
                 <div class="row g-3">
                     <div class="col-md-6">
