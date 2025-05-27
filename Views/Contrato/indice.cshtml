@@ -1,9 +1,5 @@
 @model IEnumerable<ContratoDTO>
 
-
-@{
-    ViewBag.Title = "Contratos";
-}
 <h2>@ViewBag.Title</h2>
 
 @if (TempData["Mensaje"] != null)
@@ -12,6 +8,23 @@
         @TempData["Mensaje"]
     </div>
 }
+
+<div class="mb-4">
+    <form class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="inicio" class="form-label">Fecha de inicio</label>
+            <input type="date" class="form-control" id="inicio" name="inicio">
+        </div>
+        <div class="col-md-4">
+            <label for="fin" class="form-label">Fecha de fin</label>
+            <input type="date" class="form-control" id="fin" name="fin">
+        </div>
+        <div class="col-md-4">
+            <button type="button" id="btnFiltroFechas" class="btn btn-primary w-100">Buscar</button>
+        </div>
+    </form>
+</div>
+
 
 
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
@@ -70,25 +83,63 @@
         }
     </tbody>
 </table>
+
+<script>
+    $('#btnFiltroFechas').on('click', function () {
+        const inicio = $('#inicio').val();
+        const fin = $('#fin').val();
+        const maxValue = '9999-12-31';
+        const minValue = '0001-01-01';
+
+        if (inicio && fin) {
+            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${inicio}&fin=${fin}&pagina=1`;
+        } else if (inicio) {
+            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${inicio}&fin=${maxValue}&pagina=1`;
+        } else if (fin) {
+            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${minValue}&fin=${fin}&pagina=1`;
+        } else {
+            alert("Debes ingresar al menos una fecha.");
+        }
+    });
+</script>
+
+
+@{
+    string accion = ViewBag.Accion ?? "Indice";
+    string inicio = ViewBag.Inicio;
+    string fin = ViewBag.Fin;
+}
 <nav aria-label="Paginación">
     <ul class="pagination justify-content-center mt-4">
 
+        @{
+            string anteriorParams = $"pagina={ViewBag.PaginaActual - 1}";
+            if (accion == "BuscarVigenteXFechas")
+                anteriorParams = $"inicio={inicio}&fin={fin}&{anteriorParams}";
+        }
         <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Indice", new { pagina = ViewBag.PaginaActual - 1 })"
-                tabindex="-1">Anterior</a>
+            <a class="page-link" href="@Url.Action(accion)@($"?{anteriorParams}")" tabindex="-1">Anterior</a>
         </li>
-
 
         @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
         {
+            string pageParams = $"pagina={i}";
+            if (accion == "BuscarVigenteXFechas")
+                pageParams = $"inicio={inicio}&fin={fin}&{pageParams}";
+
             <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Indice", new { pagina = i })">@i</a>
+                <a class="page-link" href="@Url.Action(accion)@($"?{pageParams}")">@i</a>
             </li>
         }
 
-
+        @{
+            string siguienteParams = $"pagina={ViewBag.PaginaActual + 1}";
+            if (accion == "BuscarVigenteXFechas")
+                siguienteParams = $"inicio={inicio}&fin={fin}&{siguienteParams}";
+        }
         <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Indice", new { pagina = ViewBag.PaginaActual + 1 })">Siguiente</a>
+            <a class="page-link" href="@Url.Action(accion)@($"?{siguienteParams}")">Siguiente</a>
         </li>
+
     </ul>
 </nav>

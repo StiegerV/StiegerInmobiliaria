@@ -6,21 +6,7 @@ namespace StiegerInmobiliaria.Models
 {
     public class RepositorioInmueble : Conexion, IrepositorioInmueble
     {
-        public int ContratoActivo(int id)
-        {
-            int id_contrato = -1;
-            this.abrirConexion();
-            string sql = @"SELECT `id_contrato` FROM `contrato` WHERE `id_inmueble`=@id";
-            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
-            comando.Parameters.AddWithValue("@id", id);
-            var lector = comando.ExecuteReader();
-            if (lector.Read())
-            {
-                id_contrato = lector.GetInt16("id_contrato");
-            }
 
-            return id_contrato;
-        }
         //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
         //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
         //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
@@ -240,6 +226,22 @@ namespace StiegerInmobiliaria.Models
             return desocupados;
         }
 
+
+        public int ContratoActivo(int id)
+        {
+            int id_contrato = -1;
+            this.abrirConexion();
+            string sql = @"SELECT `id_contrato` FROM `contrato` WHERE `id_inmueble`=@id";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id);
+            var lector = comando.ExecuteReader();
+            if (lector.Read())
+            {
+                id_contrato = lector.GetInt16("id_contrato");
+            }
+
+            return id_contrato;
+        }
         public InmuebleModel TraerId(int id)
         {
             this.abrirConexion();

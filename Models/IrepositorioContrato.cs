@@ -10,5 +10,7 @@ namespace StiegerInmobiliaria.Models
 
         public List<ContratoDTO> TraerTodosDTO(int paginaNro, int tamPagina);
 
+        public List<ContratoDTO> BuscarVigenteXFechas(int paginaNro, int tamPagina,string inicio ,string fin);
+
     }
 }

@@ -6,6 +6,9 @@ namespace StiegerInmobiliaria.Models
 {
     public class RepositorioContrato : Conexion, iRepositorioContrato
     {
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
+        //---------------------------------------------------------------Interfaz base---------------------------------------------------------------
 
         public int Alta(ContratoModel c)
         {
@@ -123,6 +126,10 @@ namespace StiegerInmobiliaria.Models
             return contratos;
         }
 
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
+        //---------------------------------------------------------------ESPECIFICO---------------------------------------------------------------
+
         public ContratoModel TraerId(int id)
         {
             this.abrirConexion();
@@ -184,6 +191,9 @@ namespace StiegerInmobiliaria.Models
             return contratos;
         }
 
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
+        //---------------------------------------------------------------PAGINADO---------------------------------------------------------------
         public int TraerCantidad()
         {
             this.abrirConexion();
@@ -209,6 +219,7 @@ namespace StiegerInmobiliaria.Models
         {
             return (int)Math.Ceiling((double)totalRegistros / tamPagina);
         }
+
 
         public List<ContratoDTO> TraerTodosDTO(int paginaNro, int tamPagina)
         {
@@ -241,9 +252,9 @@ namespace StiegerInmobiliaria.Models
                 i.Apellido = lector.GetString("inquilino_apellido");
                 c.Inquilino = i;
                 var m = new InmuebleDTO();
-                m.Id_inmueble = lector.GetInt16("m.id_inmueble");
-                m.Tipo = lector.GetString("m.tipo");
-                m.Direccion = lector.GetString("m.direccion");
+                m.Id_inmueble = lector.GetInt16("id_inmueble");
+                m.Tipo = lector.GetString("tipo");
+                m.Direccion = lector.GetString("direccion");
                 c.Inmueble = m;
                 var p = new PropietarioDTO();
                 p.Id_propietario = lector.GetInt16("id_propietario");
@@ -255,6 +266,57 @@ namespace StiegerInmobiliaria.Models
             this.cerrarConexion();
             return listaContratos;
         }
+
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        //----------------------------------------------------------------FILTROS--------------------------------------------------------------
+        public List<ContratoDTO> BuscarVigenteXFechas(int paginaNro, int tamPagina, string inicio, string fin)
+        {
+            var listaContratos = new List<ContratoDTO>();
+            this.abrirConexion();
+            string sql = @$"
+            SELECT c.id_contrato, c.fecha_inicio, c.fecha_fin, c.fecha_fin_original,
+            i.id_inquilino, i.nombre AS inquilino_nombre, i.apellido AS inquilino_apellido,
+            m.id_inmueble, m.tipo, m.direccion,
+            p.id_propietario, p.nombre AS propietario_nombre, p.apellido AS propietario_apellido
+            FROM contrato AS c
+            JOIN inquilino AS i ON i.id_inquilino = c.id_inquilino
+            JOIN inmueble AS m ON m.id_inmueble = c.id_inmueble
+            JOIN propietario AS p ON p.id_propietario = m.id_propietario
+            WHERE c.fecha_inicio>=@inicio AND c.fecha_fin<=@fin AND c.activo=1
+            LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@inicio", inicio);
+            comando.Parameters.AddWithValue("@fin", fin);
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                var c = new ContratoDTO();
+                c.Id_contrato = lector.GetInt16("id_contrato");
+                c.Fecha_inicio = lector.GetDateTime("fecha_inicio");
+                c.Fecha_fin = lector.GetDateTime("fecha_fin");
+                c.Fecha_fin_original = lector.IsDBNull(lector.GetOrdinal("fecha_fin_original")) ? null : lector.GetDateTime("fecha_fin_original");
+                var i = new InquilinoDTO();
+                i.Id_inquilino = lector.GetInt16("id_inquilino");
+                i.Nombre = lector.GetString("inquilino_nombre");
+                i.Apellido = lector.GetString("inquilino_apellido");
+                c.Inquilino = i;
+                var m = new InmuebleDTO();
+                m.Id_inmueble = lector.GetInt16("id_inmueble");
+                m.Tipo = lector.GetString("tipo");
+                m.Direccion = lector.GetString("direccion");
+                c.Inmueble = m;
+                var p = new PropietarioDTO();
+                p.Id_propietario = lector.GetInt16("id_propietario");
+                p.Nombre = lector.GetString("propietario_nombre");
+                p.Apellido = lector.GetString("propietario_apellido");
+                c.Propietario = p;
+                listaContratos.Add(c);
+            }
+            this.cerrarConexion();
+            return listaContratos;
+        }
+
     }
 
 }

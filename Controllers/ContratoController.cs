@@ -29,10 +29,12 @@ public class ContratoController : Controller
     {
         int tamPagina = 5;
         var contratos = repositorio.TraerTodosDTO(pagina, tamPagina);
-        
+
 
         ViewBag.PaginaActual = pagina;
         ViewBag.TamPagina = tamPagina;
+        ViewBag.Accion = "Indice";
+        ViewBag.Title = "Contratos";
         var totalRegistros = repositorio.TraerCantidad();
         ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
 
@@ -174,8 +176,29 @@ public class ContratoController : Controller
 
     }
 
+    public ActionResult BuscarVigenteXFechas(string inicio, string fin, int pagina = 1)
+    {
+        int tamPagina = 5;
+        //formatear los strings
 
-    //pasar a el controlador de inmueble
+        var contratos = repositorio.BuscarVigenteXFechas(pagina, tamPagina, inicio, fin);
+
+
+        ViewBag.PaginaActual = pagina;
+        ViewBag.TamPagina = tamPagina;
+        ViewBag.Accion = "BuscarVigenteXFechas";
+        ViewBag.Title = $"Contratos entre {inicio} y {fin}";
+        //preguntar si conviene por sql el total o si sirve el count
+        var totalRegistros = contratos.Count;
+        ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
+
+        return View("Indice", contratos);
+
+    }
+
+
+
     [Route("[controller]/buscarInmuebles")]
     public ActionResult buscarInmuebles(string inicio, string fin)
     {
