@@ -21,6 +21,26 @@
     </select>
 </div>
 
+<div class="container my-4">
+    <div class="card shadow-sm p-4">
+        <h5 class="mb-3 fw-bold">Búsqueda de inmuebles desocupados por fechas</h5>
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="fechaInicio" class="form-label">Inicio</label>
+                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio">
+            </div>
+            <div class="col-md-4">
+                <label for="fechaFin" class="form-label">Fin</label>
+                <input type="date" class="form-control" id="fechaFin" name="fechaFin">
+            </div>
+            <div class="col-md-4">
+                <button id="filtroFechas" class="btn btn-primary w-100">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
@@ -76,47 +96,83 @@
             window.location.href = `/Inmueble/ListarXDisponible?estado=${encodeURIComponent(estado)}&pagina=1`;
         }
     });
+
+    $('#filtroFechas').on('click', function () {
+        const inicio = $('#fechaInicio').val();
+        const fin = $('#fechaFin').val();
+
+        window.location.href = `/Inmueble/ListarDesocupadoXFechas?inicio=${inicio}&fin=${fin}&pagina=1`;
+
+    })
 </script>
 
 
 @{
     string accion = ViewBag.Accion ?? "Indice";
-    string estado = ViewBag.Estado;
-}
+    string estado = "";
+    string inicio = "";
+    string fin = "";
 
+    if (accion == "ListarXDisponible")
+    {
+        estado = ViewBag.Estado;
+    }
+    else if (accion == "ListarDesocupadoXFechas")
+    {
+        inicio = ViewBag.Inicio;
+        fin = ViewBag.Fin;
+    }
+}
 <nav aria-label="Paginación">
     <ul class="pagination justify-content-center mt-4">
-
         @{
             string anteriorParams = $"pagina={ViewBag.PaginaActual - 1}";
             if (accion == "ListarXDisponible")
+            {
                 anteriorParams = $"estado={estado}&{anteriorParams}";
+            }
+            else if (accion == "ListarDesocupadoXFechas")
+            {
+                anteriorParams = $"inicio={inicio}&fin={fin}&{anteriorParams}";
+            }
         }
         <li class="page-item @(ViewBag.PaginaActual == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action(accion)@($"?{anteriorParams}")" tabindex="-1">Anterior</a>
+            <a class="page-link" href="@Url.Action(accion)?@anteriorParams" tabindex="-1">Anterior</a>
         </li>
 
         @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
         {
             string pageParams = $"pagina={i}";
             if (accion == "ListarXDisponible")
+            {
                 pageParams = $"estado={estado}&{pageParams}";
+            }
+            else if (accion == "ListarDesocupadoXFechas")
+            {
+                pageParams = $"inicio={inicio}&fin={fin}&{pageParams}";
+            }
 
             <li class="page-item @(i == ViewBag.PaginaActual ? "active" : "")">
-                <a class="page-link" href="@Url.Action(accion)@($"?{pageParams}")">@i</a>
+                <a class="page-link" href="@Url.Action(accion)?@pageParams">@i</a>
             </li>
         }
 
         @{
             string siguienteParams = $"pagina={ViewBag.PaginaActual + 1}";
             if (accion == "ListarXDisponible")
+            {
                 siguienteParams = $"estado={estado}&{siguienteParams}";
+            }
+            else if (accion == "ListarDesocupadoXFechas")
+            {
+                siguienteParams = $"inicio={inicio}&fin={fin}&{siguienteParams}";
+            }
         }
         <li class="page-item @(ViewBag.PaginaActual == ViewBag.TotalPaginas ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action(accion)@($"?{siguienteParams}")">Siguiente</a>
+            <a class="page-link" href="@Url.Action(accion)?@siguienteParams">Siguiente</a>
         </li>
-
     </ul>
 </nav>
+
 
 

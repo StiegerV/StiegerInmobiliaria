@@ -385,6 +385,45 @@ namespace StiegerInmobiliaria.Models
         }
 
 
+        public List<InmuebleModel> ListarDesocupadoXFechas(string inicio, string fin, int paginaNro, int tamPagina)
+        {
+            List<InmuebleModel> inmuebles = new List<InmuebleModel>();
+            this.abrirConexion();
+            string sql = @$"SELECT *
+                    FROM inmueble AS i
+                    WHERE i.id_inmueble NOT IN (
+                        SELECT c.id_inmueble
+                        FROM contrato AS c
+                        WHERE c.fecha_inicio <= @fechaFin
+                        AND c.fecha_fin >= @fechaInicio
+                        AND activo = 1)
+                        LIMIT {(paginaNro - 1) * tamPagina}, {tamPagina};";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@fechaInicio", inicio);
+            comando.Parameters.AddWithValue("@fechaFin", fin);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                InmuebleModel i = new InmuebleModel();
+                i.Id_inmueble = lector.GetInt16("id_inmueble");
+                i.Id_propietario = lector.GetInt16("id_propietario");
+                i.Direccion = lector.IsDBNull(lector.GetOrdinal("direccion")) ? null : lector.GetString("direccion");
+                i.Uso = lector.IsDBNull(lector.GetOrdinal("uso")) ? null : lector.GetString("uso");
+                i.Tipo = lector.IsDBNull(lector.GetOrdinal("tipo")) ? null : lector.GetString("tipo");
+                i.Ambientes = lector.IsDBNull(lector.GetOrdinal("ambientes")) ? -1 : lector.GetInt32("ambientes");
+                i.Cordenadas = lector.IsDBNull(lector.GetOrdinal("cordenadas")) ? null : lector.GetString("cordenadas");
+                i.Precio = lector.IsDBNull(lector.GetOrdinal("precio")) ? -1 : lector.GetDouble("precio");
+                i.Disponible = lector.IsDBNull(lector.GetOrdinal("disponible")) ? null : lector.GetString("disponible");
+                i.Imagen = lector.IsDBNull(lector.GetOrdinal("imagen")) ? null : lector.GetString("imagen");
+
+                inmuebles.Add(i);
+            }
+            this.cerrarConexion();
+            return inmuebles;
+
+        }
+
 
 
     }

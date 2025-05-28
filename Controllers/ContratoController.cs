@@ -213,8 +213,16 @@ public class ContratoController : Controller
     {
         var disponibles = repositorio.Busqueda(term);
 
+
         return Json(disponibles);
     }
+
+    public ActionResult ContratoXInmueble(int id)
+    {
+       var contratos= repositorio.ContratoXInmueble(id);
+
+        return Json(contratos);
+        }
 
 }
 

@@ -25,6 +25,27 @@
     </form>
 </div>
 
+<div class="mb-4">
+    <label for="filtroDias" class="form-label fw-bold">Filtro por plazos</label>
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <button id="30" class="btn btn-outline-primary">30 días</button>
+        <button id="60" class="btn btn-outline-primary">60 días</button>
+        <button id="90" class="btn btn-outline-primary">90 días</button>
+    </div>
+
+    <div class="row g-2 align-items-center">
+        <div class="col-auto">
+            <label for="plazoEspecifico" class="col-form-label">Plazo específico (días):</label>
+        </div>
+        <div class="col-auto">
+            <input type="number" class="form-control" name="plazoEspecifico" id="plazoEspecifico" placeholder="Ej: 45">
+        </div>
+        <div class="col-auto">
+            <button id="botonPlazoEspecifico" class="btn btn-primary">Buscar</button>
+        </div>
+    </div>
+</div>
+
 
 
 <table class="table table-bordered table-striped table-hover bg-white text-dark">
@@ -85,6 +106,24 @@
 </table>
 
 <script>
+    function url(inicio, fin) {
+        return `/Contrato/BuscarVigenteXFechas?inicio=${inicio}&fin=${fin}&pagina=1`;
+    }
+
+    function formateoPlazo(dias) {
+        const hoy = new Date();
+        const inicio = new Date(hoy);
+        inicio.setDate(inicio.getDate() - dias);
+
+        const fin = new Date(hoy);
+        fin.setDate(fin.getDate() + dias);
+
+        const inicioStr = inicio.toISOString().split("T")[0];
+        const finStr = fin.toISOString().split("T")[0];
+
+        return { inicio: inicioStr, fin: finStr };
+    }
+
     $('#btnFiltroFechas').on('click', function () {
         const inicio = $('#inicio').val();
         const fin = $('#fin').val();
@@ -92,16 +131,42 @@
         const minValue = '0001-01-01';
 
         if (inicio && fin) {
-            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${inicio}&fin=${fin}&pagina=1`;
+            window.location.href = url(inicio, fin);
         } else if (inicio) {
-            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${inicio}&fin=${maxValue}&pagina=1`;
+            window.location.href = url(inicio, maxValue);
         } else if (fin) {
-            window.location.href = `/Contrato/BuscarVigenteXFechas?inicio=${minValue}&fin=${fin}&pagina=1`;
+            window.location.href = url(minValue, fin);
         } else {
             alert("Debes ingresar al menos una fecha.");
         }
     });
+
+    $('#30').on('click', function () {
+        const { inicio, fin } = formateoPlazo(30);
+        window.location.href = url(inicio, fin);
+    });
+
+    $('#60').on('click', function () {
+        const { inicio, fin } = formateoPlazo(60);
+        window.location.href = url(inicio, fin);
+    });
+
+    $('#90').on('click', function () {
+        const { inicio, fin } = formateoPlazo(90);
+        window.location.href = url(inicio, fin);
+    });
+
+    $('#botonPlazoEspecifico').on('click', function () {
+        const dias = parseInt($('#plazoEspecifico').val());
+        if (isNaN(dias) || dias <= 0) {
+            alert("Ingrese un número de días válido.");
+            return;
+        }
+        const { inicio, fin } = formateoPlazo(dias);
+        window.location.href = url(inicio, fin);
+    });
 </script>
+
 
 
 @{

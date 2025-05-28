@@ -14,5 +14,7 @@ namespace StiegerInmobiliaria.Models
 
          public int BajaUser(int id,int usr);
 
+         public List<PagoModel> PagosXContrato(int idContrato);
+
     }
 }

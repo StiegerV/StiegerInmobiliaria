@@ -97,5 +97,26 @@ namespace StiegerInmobiliaria.Controllers
 
             return RedirectToAction("Indice");
         }
+
+        public ActionResult PagosXContrato(int id)
+        {
+            var pagos = repositorio.PagosXContrato(id);
+            return Json(pagos);
+        }
+
+        [HttpPost]
+        public IActionResult NuevoPagoModal(int Id_contrato, decimal Monto, DateTime Fecha, string Estado, string Observacion)
+        {
+            var pago = new PagoModel();
+            pago.Id_contrato = Id_contrato;
+            pago.Monto = Convert.ToDouble(Monto);
+
+            pago.Fecha = Fecha;
+            pago.Estado = Estado;
+            pago.Observacion = Observacion;
+            repositorio.Alta(pago);
+            return RedirectToAction("Detalle", new { id = Id_contrato });
+        }
+
     }
 }

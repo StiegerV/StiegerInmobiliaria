@@ -152,6 +152,23 @@ namespace StiegerInmobiliaria.Controllers
             return View("indice", inmuebles);
         }
 
+        public ActionResult ListarDesocupadoXFechas(string inicio, string fin, int pagina = 1)
+        {
+            int tamPagina = 5;
+            var inmuebles = repositorio.ListarDesocupadoXFechas(inicio, fin, pagina, tamPagina);
+            var totalRegistros = inmuebles.Count;
+
+            ViewBag.PaginaActual = pagina;
+            ViewBag.TamPagina = tamPagina;
+            ViewBag.Accion = "ListarXDisponible";
+            ViewBag.Title = $"Inmuebles disponibles entre {inicio} y {fin}";
+
+            ViewBag.TotalPaginas = repositorio.ObtenerTotalPaginas(tamPagina, totalRegistros);
+
+
+            return View("indice", inmuebles);
+        }
+
 
         [HttpPost]
         public ActionResult EliminarImagen(InmuebleModel inmueble)

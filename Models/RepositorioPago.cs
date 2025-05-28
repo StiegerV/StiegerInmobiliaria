@@ -269,5 +269,33 @@ namespace StiegerInmobiliaria.Models
         {
             return (int)Math.Ceiling((double)totalRegistros / tamPagina);
         }
+
+
+        public List<PagoModel> PagosXContrato(int idContrato)
+        {
+            var pagos = new List<PagoModel>();
+
+            this.abrirConexion();
+            string sql = @"SELECT * FROM `pago` WHERE `id_contrato`=@id
+                        ORDER BY fecha";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", idContrato);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                PagoModel p = new PagoModel();
+                p.Id_pago = lector.GetInt16("id_pago");
+                p.Id_contrato = lector.GetInt16("id_contrato");
+                p.Monto = lector.GetDouble("monto");
+                p.Fecha = lector.GetDateTime("fecha");
+                p.Observacion = lector.IsDBNull(lector.GetOrdinal("observacion")) ? null : lector.GetString("observacion");
+                p.Estado = lector.IsDBNull(lector.GetOrdinal("estado")) ? null : lector.GetString("estado");
+                pagos.Add(p);
+            }
+            this.cerrarConexion();
+
+            return pagos;
+        }
     }
 }

@@ -317,6 +317,37 @@ namespace StiegerInmobiliaria.Models
             return listaContratos;
         }
 
+
+        public List<ContratoDTO> ContratoXInmueble(int id_inmueble)
+        {
+            var listaContratos = new List<ContratoDTO>();
+            this.abrirConexion();
+            string sql = @$"
+            SELECT c.id_contrato, c.fecha_inicio, c.fecha_fin, c.fecha_fin_original,
+            i.id_inquilino, i.nombre AS inquilino_nombre, i.apellido AS inquilino_apellido
+            FROM contrato AS c
+            JOIN inquilino AS i ON i.id_inquilino = c.id_inquilino
+            WHERE c.activo = 1 AND `id_inmueble`=@id";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", id_inmueble);
+            var lector = comando.ExecuteReader();
+            while (lector.Read())
+            {
+                var c = new ContratoDTO();
+                c.Id_contrato = lector.GetInt16("id_contrato");
+                c.Fecha_inicio = lector.GetDateTime("fecha_inicio");
+                c.Fecha_fin = lector.GetDateTime("fecha_fin");
+                c.Fecha_fin_original = lector.IsDBNull(lector.GetOrdinal("fecha_fin_original")) ? null : lector.GetDateTime("fecha_fin_original");
+                var i = new InquilinoDTO();
+                i.Id_inquilino = lector.GetInt16("id_inquilino");
+                i.Nombre = lector.GetString("inquilino_nombre");
+                i.Apellido = lector.GetString("inquilino_apellido");
+                c.Inquilino = i;
+                listaContratos.Add(c);
+            }
+            this.cerrarConexion();
+            return listaContratos;
+        }
     }
 
 }

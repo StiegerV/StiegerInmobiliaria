@@ -54,7 +54,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>@Model.Id_inmueble</td>
+                    <td id="Id">@Model.Id_inmueble</td>
                     <td>
                         <a href="@Url.Action("Detalle", "Propietario", new { id = ViewBag.Propietario.Id_propietario })"
                             class="text-decoration-none text-primary fw-semibold">
@@ -71,5 +71,47 @@
                 </tr>
             </tbody>
         </table>
+
+        <button id="ListarContratos" class="btn btn-primary">Listar contratos</button>
+        <div class="modal fade" id="modalInmuebles" tabindex="-1" aria-labelledby="modalInmueblesLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalInmueblesLabel">Contratos del inmueble</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body" id="modal-body-inmuebles">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<script>
+    $('#ListarContratos').click(function () {
+        $.ajax({
+            url: `/Contrato/ContratoXInmueble?id=${$('#Id').html()}`,
+            method: 'GET',
+            success: function (data) {
+                let html = "<ul class='list-group'>";
+                for (const i of data) {
+                    html += `<li class='list-group-item'>
+                    <a href="/Contrato/Detalle/${i.id_contrato}"> Inquilino:${i.inquilino.nombre + " " + i.inquilino.apellido}- inicio:${i.fecha_inicio.split("T")[0]} fin:${i.fecha_fin.split("T")[0]}</a>
+                    </li>`;
+                }
+                html += "</ul>";
+                $('#modal-body-inmuebles').html(html);
+                let modal = new bootstrap.Modal(document.getElementById('modalInmuebles'));
+                modal.show();
+            },
+            error: function () {
+                $('#modal-body-inmuebles').html("<p class='text-danger'>Error al obtener los contratos.</p>");
+                let modal = new bootstrap.Modal(document.getElementById('modalInmuebles'));
+                modal.show();
+            }
+        });
+    });
+</script>

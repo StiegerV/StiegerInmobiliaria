@@ -54,7 +54,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>@Model.Id_contrato</td>
+                    <td id="idContrato">@Model.Id_contrato</td>
                     <td><a
                             href="@Url.Action("Detalle", "Inmueble", new { id = Model.Inmueble.Id_inmueble })">@Model.Inmueble.ToString();</a>
                     </td>
@@ -66,11 +66,12 @@
                     </td>
                     <td>@Model.Fecha_inicio</td>
                     <td>@Model.Fecha_fin</td>
-                    <td><a
-                            href="@Url.Action("Detalle", "Usuario", new { id = Model.CreadoPor.Id_usuario})">@Model.CreadoPor.ToString();</a>
-                    </td>
+
                     @if (User.IsInRole("administrador"))
                     {
+                        <td><a
+                                href="@Url.Action("Detalle", "Usuario", new { id = Model.CreadoPor.Id_usuario})">@Model.CreadoPor.ToString()</a>
+                        </td>
                         @if (Model.FinalizadoPor != null)
                         {
                             <td><a
@@ -90,3 +91,102 @@
         </table>
     </div>
 </div>
+
+<div class="container my-4">
+    <h5 class="fw-bold mb-3">Informes</h5>
+    <button id="pagos" class="btn btn-outline-primary">Ver pagos</button>
+
+
+    <div class="modal fade" id="modalPagos" tabindex="-1" aria-labelledby="modalPagosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPagosLabel">Pagos del contrato</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3 text-end">
+                        <button id="agregarPago" class="btn btn-sm btn-success">Agregar nuevo pago</button>
+                    </div>
+
+                    <form asp-action="NuevoPagoModal" asp-controller="Pago" method="post" class="mb-4 d-none"
+                        id="formularioPago">
+                        <input type="hidden" name="Id_contrato" value="@Model.Id_contrato" />
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="Monto" class="form-label">Monto</label>
+                                <input type="number" class="form-control" name="Monto" id="Monto" required />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="Fecha" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" name="Fecha" id="Fecha" required />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="Estado" class="form-label">Estado</label>
+                                <select class="form-select" name="Estado" id="Estado">
+                                    <option value="completado">Completado</option>
+                                    <option value="en proceso">En proceso</option>
+                                    <option value="fallo">Fallo</option>
+                                    <option value="anulado">Anulado</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="Observacion" class="form-label">Observación</label>
+                                <input type="text" class="form-control" name="Observacion" id="Observacion" />
+                            </div>
+
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary">Guardar pago</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="modal-body-pagos"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#pagos').on('click', function () {
+        const id = $('#idContrato').html();
+
+        $.ajax({
+            url: `/Pago/PagosXContrato?id=${id}`,
+            method: 'GET',
+            success: function (data) {
+                let html = "<ul class='list-group'>";
+                for (const i of data) {
+                    html += `<li class='list-group-item'>
+                    <a href="/Pago/Detalle/${i.id_pago}">
+                        Monto: ${i.monto} | Estado: ${i.estado} | Fecha: ${i.fecha.split("T")[0]}
+                    </a>
+                </li>`;
+                }
+                html += "</ul>";
+                $('#modal-body-pagos').html(html);
+                const modal = new bootstrap.Modal(document.getElementById('modalPagos'));
+                modal.show();
+            },
+            error: function () {
+                $('#modal-body-pagos').html("<p class='text-danger'>Error al obtener los pagos.</p>");
+                const modal = new bootstrap.Modal(document.getElementById('modalPagos'));
+                modal.show();
+            }
+        });
+    });
+
+   $('#agregarPago').on('click', function () {
+    $('#formularioPago').toggleClass('d-none');
+});
+
+</script>
