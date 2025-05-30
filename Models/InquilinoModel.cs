@@ -7,10 +7,6 @@ namespace StiegerInmobiliaria.Models
         [Key]
         public int Id_inquilino { get; set; }
 
-        public InquilinoModel() { }
-
-       
-
 
         public override string ToString()
         {

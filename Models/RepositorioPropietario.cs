@@ -29,7 +29,6 @@ namespace StiegerInmobiliaria.Models
             return id;
         }
 
-        /**/
         public int Baja(int id)
         {
             this.abrirConexion();

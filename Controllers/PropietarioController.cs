@@ -28,20 +28,22 @@ namespace StiegerInmobiliaria.Controllers
             return View(inmuebles);
         }
 
-        [HttpPost]
+
         [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
             try
             {
-                repositorio.Baja(id);
-                TempData["Mensaje"] = "Propietario eliminado exitosamente.";
-                return RedirectToAction("Indice");
+                int columnas = repositorio.Baja(id);
+                if (columnas == 1)
+                {
+                    return Json(new { success = true, mensaje = "Propietario eliminado exitosamente." });
+                }
+                return Json(new { success = false, mensaje = "No se ah podido eliminar al propietario" });
             }
             catch (System.Exception)
             {
-                TempData["Mensaje"] = "Error al eliminar propietario.";
-                return RedirectToAction("Indice");
+                return Json(new { success = false, mensaje = "Error inesperado al eliminar el propietario." });
             }
         }
 
@@ -64,19 +66,34 @@ namespace StiegerInmobiliaria.Controllers
         [HttpPost]
         public ActionResult NuevoPropietario(PropietarioModel propietario)
         {
-
-            try
+            if (ModelState.IsValid)
             {
-                repositorio.Alta(propietario);
-                TempData["Mensaje"] = "Propietario Creado .";
-                return RedirectToAction("indice");
-            }
-            catch (System.Exception)
-            {
-                TempData["Mensaje"] = "Error al crear propietario.";
-                return RedirectToAction("Indice");
-            }
 
+
+                try
+                {
+                    repositorio.Alta(propietario);
+                    TempData["Mensaje"] = "Propietario Creado .";
+                    TempData["Alerta"] = "alert alert-succes";
+                    return RedirectToAction("indice");
+                }
+                catch (System.Exception)
+                {
+                    TempData["Mensaje"] = "Error al crear propietario.";
+                    TempData["Alerta"] = "alert alert-danger";
+                    return RedirectToAction("Indice");
+                }
+            }
+            else
+            {
+                var errores = ModelState.Values
+     .SelectMany(v => v.Errors)
+     .Select(e => e.ErrorMessage)
+     .ToList();
+                TempData["Mensaje"] = string.Join(" | ", errores);
+                TempData["Alerta"] = "alert alert-danger";
+                return View("NuevoEditar", propietario);
+            }
         }
 
 

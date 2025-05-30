@@ -34,26 +34,29 @@ namespace StiegerInmobiliaria.Controllers
 
 
 
-
         [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
 
-            if (repositorio.ContratoActivo(id) == -1)
+            try
             {
-                repositorio.Baja(id);
-                TempData["Mensaje"] = "Inmueble eliminado exitosamente.";
-                return RedirectToAction("Indice");
+                if (repositorio.ContratoActivo(id) == -1)
+                {
+                    int col = repositorio.Baja(id);
+                    return Json(new { success = true, mensaje = "Inmueble eliminado exitosamente." });
+                }
+                else
+                {
+                    return Json(new { success = false, mensaje = "El inmueble tiene un contrato activo." });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["Mensaje"] = "Error al eliminar Inmueble,existe un contrato activo.";
-                return RedirectToAction("Indice");
+                Console.WriteLine(ex);
+                return Json(new { success = false, mensaje = "Error inesperado al eliminar el inmueble." });
             }
-
-
-
         }
+
 
         public ActionResult Detalle(int id)
         {
@@ -101,20 +104,37 @@ namespace StiegerInmobiliaria.Controllers
 
             repositorio.Modificacion(inmueble);
             TempData["Mensaje"] = $"Inmueble nro {inmueble.Id_inmueble} editado";
+            TempData["Alerta"] = "alert alert-success";
             return RedirectToAction("Indice");
         }
 
         public ActionResult NuevoInmueble(InmuebleModel inmueble)
         {
-            if (inmueble.ImagenArchivo != null)
+            if (ModelState.IsValid)
             {
-                var url = GuardarArchivo(inmueble);
-                inmueble.Imagen = url;
-            }
-            repositorio.Alta(inmueble);
-            TempData["Mensaje"] = $"Inmueble creado";
+                if (inmueble.ImagenArchivo != null)
+                {
+                    var url = GuardarArchivo(inmueble);
+                    inmueble.Imagen = url;
+                }
+                repositorio.Alta(inmueble);
+                TempData["Mensaje"] = $"Inmueble creado";
+                TempData["Alerta"] = "alert alert-success";
 
-            return RedirectToAction("Indice");
+                return RedirectToAction("Indice");
+            }
+            else
+            {
+                var errores = ModelState.Values
+     .SelectMany(v => v.Errors)
+     .Select(e => e.ErrorMessage)
+     .ToList();
+                TempData["Mensaje"] = string.Join(" | ", errores);
+                TempData["Alerta"] = "alert alert-danger";
+                return View("NuevoEditar", inmueble);
+            }
+
+
         }
 
 
@@ -154,6 +174,7 @@ namespace StiegerInmobiliaria.Controllers
 
         public ActionResult ListarDesocupadoXFechas(string inicio, string fin, int pagina = 1)
         {
+
             int tamPagina = 5;
             var inmuebles = repositorio.ListarDesocupadoXFechas(inicio, fin, pagina, tamPagina);
             var totalRegistros = inmuebles.Count;

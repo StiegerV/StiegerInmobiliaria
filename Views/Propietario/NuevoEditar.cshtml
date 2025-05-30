@@ -1,7 +1,12 @@
 @model PropietarioModel
 
 
-
+@if (TempData["Mensaje"] != null)
+{
+    <div class="@TempData["Alerta"]">
+        @TempData["Mensaje"]
+    </div>
+}
 @if (Model.Id_propietario > 0)
 {
 

@@ -6,7 +6,7 @@
 <h2>@ViewBag.Title</h2>
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="@TempData["Alerta"]">
         @TempData["Mensaje"]
     </div>
 }
@@ -34,11 +34,10 @@
                 <td style="display: flex; flex-direction: row; justify-content: space-around;">
                     @if (User.IsInRole("administrador"))
                     {
-                        <form action="@Url.Action("Eliminar", "Propietario")" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@propietario.Id_propietario" />
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('eliminar al propietario?')">Eliminar</button>
-                        </form>
+                       <button type="button" class="btn btn-danger btn-sm"
+                            onclick="Sweet('/Propietario/Eliminar?id=', @propietario.Id_propietario)">
+                            Eliminar
+                        </button>
                     }
 
                     <a href="@Url.Action("NuevoEditar", "Propietario", new { id = propietario.Id_propietario })">

@@ -45,16 +45,23 @@ public class ContratoController : Controller
     [Authorize(Policy = "administrador")]
     public ActionResult Eliminar(int id)
     {
-        int columnas = repositorio.Baja(id);
-        if (columnas == 1)
+        try
         {
-            TempData["Mensaje"] = "Contrato eliminado exitosamente.";
+            int columnas = repositorio.Baja(id);
+            if (columnas == 1)
+            {
+                return Json(new { success = true, mensaje = "Contrato eliminado exitosamente." });
+            }
+
+            return Json(new { success = false, mensaje = "No se ah podido eliminar el contrato." });
         }
-        else
+        catch (System.Exception ex)
         {
-            TempData["Mensaje"] = "Error al eliminar Contrato.";
+            Console.WriteLine(ex);
+            return Json(new { success = false, mensaje = "Error inesperado al eliminar el Pago." });
+
         }
-        return RedirectToAction("Indice");
+
     }
 
     public ActionResult Cancelar(int id)
@@ -96,7 +103,7 @@ public class ContratoController : Controller
         repositorioPago.Alta(p);
 
         TempData["Mensaje"] = $"Se ah aplicado una multa de {mesesMulta} meses.";
-
+        TempData["Alerta"] = "alert alert-success";
 
         return RedirectToAction("Indice");
     }
@@ -140,38 +147,57 @@ public class ContratoController : Controller
 
     public ActionResult NuevoContrato(ContratoModel c)
     {
-        try
+        if (ModelState.IsValid)
         {
-            int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            c.Creador_por = idUser;
-            int id = repositorio.Alta(c);
-            //cuanto pagos hay que hacer
-            int mesesTotales = ((c.FechaFin.Year - c.FechaInicio.Year) * 12) + c.FechaFin.Month - c.FechaInicio.Month;
-            var fecha = c.FechaInicio;
-            //generacion de pagos
-            for (int i = 0; i < mesesTotales; i++)
+
+
+            try
             {
-                var p = new PagoModel();
-                p.Id_contrato = id;
-                p.Monto = c.Monto;
-                p.Fecha = fecha;
+                int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                c.Creador_por = idUser;
 
-                string[] meses = {"enero", "febrero", "marzo", "abril", "mayo", "junio",
+                int id = repositorio.Alta(c);
+                //cuanto pagos hay que hacer
+                int mesesTotales = ((c.FechaFin.Year - c.FechaInicio.Year) * 12) + c.FechaFin.Month - c.FechaInicio.Month;
+                var fecha = c.FechaInicio;
+                //generacion de pagos
+                for (int i = 0; i < mesesTotales; i++)
+                {
+                    var p = new PagoModel();
+                    p.Id_contrato = id;
+                    p.Monto = c.Monto;
+                    p.Fecha = fecha;
+
+                    string[] meses = {"enero", "febrero", "marzo", "abril", "mayo", "junio",
                                 "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"};
-                p.Observacion = $"Pago {meses[fecha.Month - 1]}";
-                p.Estado = "en proceso";
-                repositorioPago.Alta(p);
-                fecha = fecha.AddMonths(1);
-            }
-            TempData["Mensaje"] = "Contrato creado exitosamente.";
+                    p.Observacion = $"Pago {meses[fecha.Month - 1]}";
+                    p.Estado = "en proceso";
+                    repositorioPago.Alta(p);
+                    fecha = fecha.AddMonths(1);
+                }
+                TempData["Mensaje"] = $"Contrato creado exitosamente.";
+                TempData["Alerta"] = "alert alert-success";
 
-            return RedirectToAction("Indice");
+                return RedirectToAction("Indice");
+            }
+            catch (System.Exception ex)
+            {
+                TempData["Mensaje"] = "Ah ocurrido un error al crear contrato";
+                TempData["Alerta"] = "alert alert-danger";
+                Console.WriteLine(ex);
+                return RedirectToAction("Indice");
+            }
         }
-        catch (System.Exception ex)
+        else
         {
-            TempData["Mensaje"] = "Ah ocurrido un error al crear contrato";
-            Console.WriteLine(ex);
-            return RedirectToAction("Indice");
+            var errores = ModelState.Values
+      .SelectMany(v => v.Errors)
+      .Select(e => e.ErrorMessage)
+      .ToList();
+            TempData["Alerta"] = "alert alert-danger";
+            TempData["Mensaje"] = string.Join(" | ", errores);
+            return View("NuevoEditar", c);
+
         }
 
     }
@@ -179,8 +205,6 @@ public class ContratoController : Controller
     public ActionResult BuscarVigenteXFechas(string inicio, string fin, int pagina = 1)
     {
         int tamPagina = 5;
-        //formatear los strings
-
         var contratos = repositorio.BuscarVigenteXFechas(pagina, tamPagina, inicio, fin);
 
 
@@ -219,10 +243,10 @@ public class ContratoController : Controller
 
     public ActionResult ContratoXInmueble(int id)
     {
-       var contratos= repositorio.ContratoXInmueble(id);
+        var contratos = repositorio.ContratoXInmueble(id);
 
         return Json(contratos);
-        }
+    }
 
 }
 

@@ -3,6 +3,12 @@
 @{
     ViewBag.Title = "Pagos";
 }
+@if (TempData["Mensaje"] != null)
+{
+    <div class="@TempData["Alerta"]">
+        @TempData["Mensaje"]
+    </div>
+}
 
 <h2 class="card-title text-center text-primary mb-4">
     @(Model.Id_pago > 0 ? "Editar Pago" : "Nuevo Pago")

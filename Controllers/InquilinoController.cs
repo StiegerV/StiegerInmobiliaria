@@ -28,20 +28,19 @@ namespace StiegerInmobiliaria.Controllers
         }
 
 
-        [HttpPost]
+
         [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
             try
             {
-                repositorio.Baja(id);
-                TempData["Mensaje"] = "Inquilino eliminado exitosamente.";
-                return RedirectToAction("Indice");
+                int col = repositorio.Baja(id);
+                return Json(new { success = true, mensaje = "Inquilino eliminado exitosamente." });
             }
-            catch (System.Exception)
+            catch (Exception ex)
             {
-                TempData["Mensaje"] = "Error al eliminar Inquilino.";
-                return RedirectToAction("Indice");
+                Console.WriteLine(ex);
+                return Json(new { success = false, mensaje = "Error inesperado al eliminar el Inquilino." });
             }
         }
 
@@ -56,23 +55,39 @@ namespace StiegerInmobiliaria.Controllers
             {
                 inquilino = new InquilinoModel();
             }
-            Console.WriteLine(inquilino);
             return View(inquilino);
         }
 
         [HttpPost]
         public ActionResult NuevoInquilino(InquilinoModel inquilino)
         {
-            try
+            if (ModelState.IsValid)
             {
-                repositorio.Alta(inquilino);
-                TempData["Mensaje"] = "Inquilino Creado exitosamente.";
-                return RedirectToAction("indice");
+
+
+                try
+                {
+                    repositorio.Alta(inquilino);
+                    TempData["Mensaje"] = "Inquilino Creado exitosamente.";
+                    TempData["Alerta"] = "alert alert-success";
+                    return RedirectToAction("indice");
+                }
+                catch (System.Exception)
+                {
+                    TempData["Mensaje"] = "Error al crear el inquilino";
+                    TempData["Alerta"] = "alert alert-danger";
+                    return RedirectToAction("indice");
+                }
             }
-            catch (System.Exception)
+            else
             {
-                TempData["Mensaje"] = "Error al crear el inquilino";
-                return RedirectToAction("indice");
+                var errores = ModelState.Values
+     .SelectMany(v => v.Errors)
+     .Select(e => e.ErrorMessage)
+     .ToList();
+                TempData["Mensaje"] = string.Join(" | ", errores);
+                TempData["Alerta"] = "alert alert-danger";
+                return View("NuevoEditar", inquilino);
             }
 
 

@@ -6,9 +6,9 @@
 
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-danger">
-        @TempData["Mensaje"]
-    </div>
+  <div class="@TempData["Alerta"]">
+    @TempData["Mensaje"]
+  </div>
 }
 
 <div class="mb-3">
@@ -66,17 +66,14 @@
                 <td style="display: flex; flex-direction: row; justify-content: space-around;">
                     @if (User.IsInRole("administrador"))
                     {
-                        <form action="@Url.Action("Eliminar", "Inmueble")" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@inmueble.Id_inmueble" />
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('eliminar al usuario?')">Eliminar</button>
-                        </form>
+                        <button type="button" class="btn btn-danger btn-sm"
+                            onclick="Sweet('/Inmueble/Eliminar?id=', @inmueble.Id_inmueble)">
+                            Eliminar
+                        </button>
                     }
-
                     <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = inmueble.Id_inmueble })">
                         <button class="btn btn-warning btn-sm">Editar</button>
                     </a>
-
                     <div>
                         <a href="@Url.Action("Detalle", "Inmueble", new { id = inmueble.Id_inmueble })">
                             <button class="btn btn-primary btn-sm">Detalle</button>

@@ -113,6 +113,7 @@ namespace StiegerInmobiliaria.Models
 
                 inmuebles.Add(i);
             }
+            lector.Close();
             this.cerrarConexion();
             return inmuebles;
         }
@@ -161,6 +162,7 @@ namespace StiegerInmobiliaria.Models
                 p.Nombre = lector.GetString("nombre");
                 p.Apellido = lector.GetString("apellido");
             }
+            lector.Close();
 
             this.cerrarConexion();
             return p;
@@ -184,7 +186,7 @@ namespace StiegerInmobiliaria.Models
                 i.Tipo = lector.GetString("tipo");
                 i.Direccion = lector.GetString("direccion");
             }
-
+            lector.Close();
             this.cerrarConexion();
             return i;
         }
@@ -222,6 +224,7 @@ namespace StiegerInmobiliaria.Models
                 desocupados.Add(i);
             }
 
+            lector.Close();
             this.cerrarConexion();
             return desocupados;
         }
@@ -239,7 +242,8 @@ namespace StiegerInmobiliaria.Models
             {
                 id_contrato = lector.GetInt16("id_contrato");
             }
-
+            lector.Close();
+            this.cerrarConexion();
             return id_contrato;
         }
         public InmuebleModel TraerId(int id)
@@ -269,6 +273,7 @@ namespace StiegerInmobiliaria.Models
             {
                 i.Id_inmueble = -1;
             }
+            lector.Close();
             this.cerrarConexion();
             return i;
         }
@@ -291,7 +296,7 @@ namespace StiegerInmobiliaria.Models
                 cantidad = lector.GetInt32("cantidad");
 
             }
-
+            lector.Close();
             this.cerrarConexion();
             return cantidad;
         }

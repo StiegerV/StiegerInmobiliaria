@@ -1,6 +1,11 @@
 @model StiegerInmobiliaria.Models.InquilinoModel
 
-
+@if (TempData["Mensaje"] != null)
+{
+    <div class="@TempData["Alerta"]">
+        @TempData["Mensaje"]
+    </div>
+}
 
 @if (Model.Id_inquilino > 0)
 {

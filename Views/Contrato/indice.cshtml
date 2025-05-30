@@ -4,7 +4,11 @@
 
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-danger">
+    /*
+    TempData["Mensaje"] = $"Contrato creado exitosamente.";
+    TempData["Alerta"] = "alert alert-success"; alert alert-danger
+    */
+    <div class="@TempData["Alerta"]">
         @TempData["Mensaje"]
     </div>
 }
@@ -76,11 +80,13 @@
                 <td>@i.Fecha_inicio</td>
                 <td>@i.Fecha_fin</td>
                 <td style="display: flex; flex-direction: row; justify-content: space-around;">
-                    <form action="@Url.Action("Eliminar", "Contrato")" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@i.Id_contrato" />
-                        <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('eliminar al contrato?')">Eliminar</button>
-                    </form>
+                    @if (User.IsInRole("administrador"))
+                    {
+                        <button type="button" class="btn btn-danger btn-sm"
+                            onclick="Sweet('/Contrato/Eliminar?id=', @i.Id_contrato)">
+                            Eliminar
+                        </button>
+                    }
 
                     <a href="@Url.Action("NuevoEditar", "Contrato", new { id = i.Id_contrato })">
                         <button class="btn btn-warning btn-sm">Renovar</button>
@@ -114,7 +120,6 @@
         const hoy = new Date();
         const inicio = new Date(hoy);
         inicio.setDate(inicio.getDate() - dias);
-
         const fin = new Date(hoy);
         fin.setDate(fin.getDate() + dias);
 

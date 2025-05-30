@@ -35,20 +35,29 @@ namespace StiegerInmobiliaria.Controllers
         }
 
 
+
+
         [Authorize(Policy = "administrador")]
         public ActionResult Eliminar(int id)
         {
-            int usr = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int columnas = repositorio.BajaUser(id, usr);
-            if (columnas == 1)
+            try
             {
-                TempData["Mensaje"] = "Pago eliminado exitosamente.";
+                int usr = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                int columnas = repositorio.BajaUser(id, usr);
+                if (columnas == 1)
+                {
+                    Console.WriteLine(columnas);
+                    return Json(new { success = true, mensaje = "Pago eliminado exitosamente." });
+                }
+                return Json(new { success = false, mensaje = "No se ah podido eliminar el pago." });
             }
-            else
+            catch (System.Exception ex)
             {
-                TempData["Mensaje"] = "Error al eliminar Pago.";
+                Console.WriteLine(ex);
+                return Json(new { success = false, mensaje = "Error inesperado al eliminar el Pago." });
             }
-            return RedirectToAction("Indice");
+
+
         }
 
 
@@ -74,21 +83,37 @@ namespace StiegerInmobiliaria.Controllers
 
         public ActionResult NuevoPago(PagoModel p)
         {
-            try
+            if (ModelState.IsValid)
             {
-                p.Creado_por = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-                repositorio.Alta(p);
-                //controlar monto>0
 
-                TempData["Mensaje"] = "Pago creado exitosamente.";
+
+                try
+                {
+                    p.Creado_por = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                    repositorio.Alta(p);
+
+                    TempData["Mensaje"] = "Pago creado exitosamente.";
+                    TempData["Alerta"] = "alert alert-succes";
+                }
+                catch (System.Exception ex)
+                {
+                    TempData["Mensaje"] = "Error al crear pago.";
+                    TempData["Alerta"] = "alert alert-danger";
+                    Console.WriteLine(ex);
+
+                }
+                return RedirectToAction("Indice");
             }
-            catch (System.Exception ex)
+            else
             {
-                TempData["Mensaje"] = "Error al crear pago.";
-                Console.WriteLine(ex);
-
+                var errores = ModelState.Values
+     .SelectMany(v => v.Errors)
+     .Select(e => e.ErrorMessage)
+     .ToList();
+                TempData["Mensaje"] = string.Join(" | ", errores);
+                TempData["Alerta"] = "alert alert-danger";
+                return View("NuevoEditar", p);
             }
-            return RedirectToAction("Indice");
         }
 
         public ActionResult EditarPago(PagoModel p)
@@ -114,8 +139,9 @@ namespace StiegerInmobiliaria.Controllers
             pago.Fecha = Fecha;
             pago.Estado = Estado;
             pago.Observacion = Observacion;
+            pago.Creado_por = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             repositorio.Alta(pago);
-            return RedirectToAction("Detalle", new { id = Id_contrato });
+            return RedirectToAction("Detalle", "Contrato", new { id = Id_contrato });
         }
 
     }

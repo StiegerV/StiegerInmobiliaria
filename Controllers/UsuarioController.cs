@@ -40,6 +40,7 @@ namespace StiegerInmobiliaria.Controllers
                 if (comparo.Id_usuario == -1 || comparo.Contraseña != hasheo)
                 {
                     TempData["Mensaje"] = "El nombre o la contraseña no son validos.";
+                    TempData["Alerta"] = "alert alert-danger";
                     return RedirectToAction("LoginView");
                 }
 
@@ -59,25 +60,6 @@ namespace StiegerInmobiliaria.Controllers
             }
             catch (Exception ex)
             {
-                String error = @"⠀⢰⡗⠲⢤⣀⡀⠀⠀⠀⣀⣠⡤⠤⠤⠤⠤⢄⡤⠤⠶⠶⠶⠤⢤⣀⠀⠀⢀⣠⡴⢻⡇⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠯⣍⠓⠓⢦⣈⢉⣵⠶⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠺⣝⡥⠤⠼⣥⡄⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠶⢭⣅⢀⣠⠟⠉⠀⠀⠀⠀⠀⠀⠀⠠⠰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣴⢞⠉⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠖⠋⠉⠉⠉⠙⢒⣒⣯⡴⣋⡠⠤⠒⢲⣶⣍⠓⠒⠲⠶⢾⣙⣮⡀⢀⣤⣖⡳⠤⠤⠔⠒⢒⣶⡖⠒⠬⠽⣙⡒⡲⠦⠤⣀⡀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠋⢀⣀⡤⠴⠒⠛⠉⣡⠞⠉⠁⠀⠀⠀⣾⣿⣿⠄⠀⠀⠀⠀⠀⠙⣻⡋⠁⠀⠀⠀⠀⠀⠀⣿⣿⣿⡀⠀⠀⠈⠙⢶⡒⠋⠉⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⢠⡏⠀⠛⠓⠲⢤⣤⠀⣞⠁⠀⠀⠀⠀⠀⠀⢿⣿⣿⠇⠀⠀⠀⠀⠀⢀⡼⢧⣀⠀⠀⠀⠀⠀⠀⢿⣿⣿⡟⠀⠀⠀⠀⢘⡗⠀⠀⠀
-⠀⣠⢤⡀⠀⠀⠀⠀⢸⠃⠀⠀⠀⣠⠞⠁⠀⣸⡗⠶⠤⠤⣄⣀⣀⣈⣛⣁⣀⣤⠤⠤⠶⠚⠉⠀⠀⠉⠓⠶⢤⣄⣀⣀⣙⡿⢋⣀⣀⣀⡤⢶⡋⠀⠀⠀⠀
-⣼⠱⡀⢹⡇⠀⠀⠀⣼⠀⠀⠠⠼⠥⠒⠛⠋⡿⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣄⠀⠀⠀⢀⡤⣄⠀⠀⠀⠀⣠⠔⠉⠉⢹⣯⣉⣂⣀⠀⠘⣷⡀⠀⠀⠀
-⢿⠀⠀⢌⠳⠴⠒⠦⣿⢰⠉⠀⠀⠀⠀⠀⣸⠃⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠒⠚⠉⠀⠈⠙⠒⠒⠉⠁⠀⠀⠀⢸⡗⠀⠀⠈⠉⠉⠛⠁⠀⠀⠀
-⠈⢧⣐⣂⡴⠋⠙⢦⡟⠈⠀⠀⠀⠀⠀⠀⡟⠉⠙⠓⠓⠒⠒⠒⠒⠒⠶⠦⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⢺⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠈⠀⠀⠀⠀⠀⣧⠀⠀⠀⠀⠀⠀⢸⠃⡄⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠈⠖⠒⠒⠒⠒⠒⢺⠀⠀⠀⠢⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠀⣾⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣤⣶⣶⣶⣶⣶⣦⣤⣤⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣤⣤⣤⣤⣤⣭⣤⣤⣄⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠈⠀⠉⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠅⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀";
-
-                Console.WriteLine(error);
                 Console.WriteLine(ex);
 
                 return RedirectToAction("LoginView");
@@ -132,14 +114,28 @@ namespace StiegerInmobiliaria.Controllers
         [Authorize(Policy = "administrador")]
         public ActionResult Nuevo(UsuarioModel usr)
         {
-            //hashear ps
-            var hash = Hash(usr);
-            usr.Contraseña = hash;
-            //crear link imagen
-            usr.Imagen = GuardarArchivo(usr);
-            repositorio.Alta(usr);
+            if (ModelState.IsValid)
+            {
+                //hashear ps
+                var hash = Hash(usr);
+                usr.Contraseña = hash;
+                //crear link imagen
+                usr.Imagen = GuardarArchivo(usr);
+                repositorio.Alta(usr);
 
-            return RedirectToAction("Indice");
+                return RedirectToAction("Indice");
+            }
+            else
+            {
+                var errores = ModelState.Values
+     .SelectMany(v => v.Errors)
+     .Select(e => e.ErrorMessage)
+     .ToList();
+                TempData["Mensaje"] = string.Join(" | ", errores);
+                TempData["Alerta"] = "alert alert-danger";
+                return View("NuevoEditar", usr);
+            }
+
         }
 
         public ActionResult Editar(UsuarioModel usr)

@@ -7,7 +7,7 @@
 
 @if (TempData["Mensaje"] != null)
 {
-    <div class="alert alert-danger">
+    <div class="@TempData["Alerta"]">
         @TempData["Mensaje"]
     </div>
 }

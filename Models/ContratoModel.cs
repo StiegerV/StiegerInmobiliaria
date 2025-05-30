@@ -4,29 +4,34 @@ namespace StiegerInmobiliaria.Models
 {
     public class ContratoModel
     {
-        [Required]
+        [Required(ErrorMessage = "El ID del contrato es obligatorio.")]
         public int Id_contrato { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El ID del inmueble es obligatorio.")]
         public int Id_inmueble { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El ID del inquilino es obligatorio.")]
         public int Id_inquilino { get; set; }
 
-        public DateTime? Fecha_fin_original{get;set;}
+        [DataType(DataType.Date)]
+        public DateTime? Fecha_fin_original { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El usuario creador es obligatorio.")]
         public int Creador_por { get; set; }
 
         public int? Terminado_por { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "El monto es obligatorio.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor que 0.")]
         public float Monto { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "La fecha de inicio es obligatoria.")]
+        [DataType(DataType.Date)]
         public DateTime FechaInicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de fin es obligatoria.")]
+        [DataType(DataType.Date)]
         public DateTime FechaFin { get; set; }
-
 
 
         public override string ToString()
