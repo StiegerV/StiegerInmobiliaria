@@ -19,11 +19,10 @@
     <div class="d-flex justify-content-center gap-2 mb-3">
         @if (User.IsInRole("administrador"))
         {
-            <form action="@Url.Action("Eliminar", "Inmueble")" method="post"
-                onsubmit="return confirm('¿Eliminar al inmueble?');">
-                <input type="hidden" name="id" value="@Model.Id_inmueble" />
-                <button type="submit" class="btn btn-danger btn-sm rounded shadow-sm">Eliminar</button>
-            </form>
+            <button type="button" class="btn btn-danger btn-sm"
+                onclick="Sweet('/Inmueble/Eliminar?id=', @Model.Id_inmueble)">
+                Eliminar
+            </button>
         }
 
         <a href="@Url.Action("NuevoEditar", "Inmueble", new { id = Model.Id_inmueble })"
@@ -32,10 +31,14 @@
         </a>
     </div>
 
-    <div class="text-center mb-4">
-        <img src="@Model.Imagen" alt="Imagen del inmueble" class="img-fluid rounded shadow-sm border border-2"
-            style="max-height: 300px;" />
-    </div>
+    @if (Model.Imagen!=null)
+    {
+        <div class="text-center mb-4">
+            <img src="@Model.Imagen" alt="Imagen del inmueble" class="img-fluid rounded shadow-sm border border-2"
+                style="max-height: 300px;" />
+        </div>
+    }
+
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover bg-white text-dark rounded">

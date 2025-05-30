@@ -8,10 +8,12 @@ namespace StiegerInmobiliaria.Controllers
     public class PropietarioController : Controller
     {
         private readonly IrepositorioPropietario repositorio;
+        private readonly IrepositorioInmueble repoInmueble;
 
-        public PropietarioController(IrepositorioPropietario repositorio)
+        public PropietarioController(IrepositorioPropietario repositorio, IrepositorioInmueble repoInmueble)
         {
             this.repositorio = repositorio;
+            this.repoInmueble = repoInmueble;
 
         }
 
@@ -34,17 +36,29 @@ namespace StiegerInmobiliaria.Controllers
         {
             try
             {
-                int columnas = repositorio.Baja(id);
-                if (columnas == 1)
+                bool tieneInmuebles = repoInmueble.TraerInmueblesxPropietario(id) != 0;
+
+                if (tieneInmuebles)
+                {
+                    return Json(new { success = false, mensaje = "El propietario tiene inmuebles activos." });
+                }
+
+                int filasAfectadas = repositorio.Baja(id);
+
+                if (filasAfectadas == 1)
                 {
                     return Json(new { success = true, mensaje = "Propietario eliminado exitosamente." });
                 }
-                return Json(new { success = false, mensaje = "No se ah podido eliminar al propietario" });
+                else
+                {
+                    return Json(new { success = false, mensaje = "No se ha podido eliminar al propietario." });
+                }
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return Json(new { success = false, mensaje = "Error inesperado al eliminar el propietario." });
             }
+
         }
 
 

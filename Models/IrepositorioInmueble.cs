@@ -27,6 +27,8 @@ namespace StiegerInmobiliaria.Models
         public int TraerCantidadxEstado(string estado);
 
         public List<InmuebleModel> ListarDesocupadoXFechas(string inicio, string fin,int paginaNro, int tamPagina);
+
+        public int TraerInmueblesxPropietario(int Id_propietario);
     }
 
 

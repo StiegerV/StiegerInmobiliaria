@@ -63,6 +63,17 @@ namespace StiegerInmobiliaria.Controllers
 
             InmuebleModel inmueble = repositorio.TraerId(id);
             PropietarioModel propietario = repositorioPropietario.TraerId(inmueble.Id_propietario);
+            if (propietario.Id_propietario != -1)
+            {
+                ViewBag.Propietario = propietario;
+
+            }
+            else
+            {
+                propietario.Apellido = "sin";
+                propietario.Nombre = "registro";
+            }
+            Console.WriteLine(propietario);
             ViewBag.Propietario = propietario;
             return View(inmueble);
         }

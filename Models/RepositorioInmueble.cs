@@ -190,6 +190,27 @@ namespace StiegerInmobiliaria.Models
             this.cerrarConexion();
             return i;
         }
+
+        public int TraerInmueblesxPropietario(int Id_propietario)
+        {
+            this.abrirConexion();
+            string sql = @"SELECT COUNT(`id_inmueble`) AS inmuebles FROM `inmueble` WHERE `activo`=1 AND id_propietario=@id";
+            MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
+            comando.Parameters.AddWithValue("@id", Id_propietario);
+            comando.CommandType = CommandType.Text;
+            var lector = comando.ExecuteReader();
+
+            int inmuebles = 0;
+
+            if (lector.Read())
+            {
+                inmuebles = lector.GetInt16("inmuebles");
+
+            }
+            lector.Close();
+            this.cerrarConexion();
+            return inmuebles;
+        }
         public List<InmuebleDTO> traerDesocupados(string inicio, string fin)
         {
             var desocupados = new List<InmuebleDTO>();
@@ -203,7 +224,7 @@ namespace StiegerInmobiliaria.Models
             FROM contrato AS c
             WHERE c.fecha_inicio <= @fechaFin
               AND c.fecha_fin >= @fechaInicio
-              AND activo = 1
+              AND activo = 1 AND disponible='disponible'
         )";
 
             MySqlCommand comando = new MySqlCommand(sql, this.conexionsql);
