@@ -16,16 +16,12 @@
         </div>
     }
 
-@if (User.IsInRole("administrador"))
-{
-        <div class="d-flex justify-content-center gap-2 mb-3">
-        <form action="@Url.Action("Eliminar", "Pago")" method="post"
-            onsubmit="return confirm('¿Eliminar el contrato?');">
-            <input type="hidden" name="id" value="@Model.Id_pago" />
-            <button type="submit" class="btn btn-danger btn-sm rounded shadow-sm">Eliminar</button>
-        </form>
-    </div>
-}
+    @if (User.IsInRole("administrador"))
+    {
+        <button type="button" class="btn btn-danger btn-sm" onclick="Sweet('/Pago/Eliminar?id=', @Model.Id_pago)">
+            Eliminar
+        </button>
+    }
 
 
     <div class="table-responsive">
@@ -43,8 +39,9 @@
             <tbody>
                 <tr>
                     <td>@Model.Id_pago</td>
-                    <td> 
-                        <a href="@Url.Action("Detalle", "Contrato", new { id = Model.Id_contrato })">@Model.ToString();</a>
+                    <td>
+                        <a
+                            href="@Url.Action("Detalle", "Contrato", new { id = Model.Id_contrato })">@Model.ToString();</a>
                     </td>
                     <td>@Model.Monto</td>
                     <td>@Model.Fecha</td>

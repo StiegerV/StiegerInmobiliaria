@@ -11,12 +11,12 @@
     </div>
 }
 
-@if (User.IsInRole("administrador")){
-<form action="@Url.Action("Eliminar", "Inquilino")" method="post" style="display:inline;">
-    <input type="hidden" name="id" value="@Model.Id_inquilino" />
-    <button type="submit" class="btn btn-danger btn-sm rounded"
-        onclick="return confirm('¿Eliminar al inquilino?')">Eliminar</button>
-</form>}
+@if (User.IsInRole("administrador"))
+{
+    <button type="button" class="btn btn-danger btn-sm" onclick="Sweet('/Inquilino/Eliminar?id=', @Model.Id_inquilino)">
+        Eliminar
+    </button>
+}
 
 <a href="@Url.Action("NuevoEditar", "Inquilino", new { id = Model.Id_inquilino })">
     <button class="btn btn-warning btn-sm rounded">Editar</button>
