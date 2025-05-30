@@ -1,0 +1,7 @@
+admin 
+nick=pepe
+contraseña=password
+
+empleado normal
+nick=the fabri twich
+contraseña=papitas

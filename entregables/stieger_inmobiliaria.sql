@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2025 at 12:52 AM
+-- Generation Time: May 30, 2025 at 05:05 PM
 -- Server version: 5.7.17
 -- PHP Version: 5.6.30
 
@@ -46,8 +46,7 @@ CREATE TABLE `contrato` (
 --
 
 INSERT INTO `contrato` (`id_contrato`, `monto`, `fecha_inicio`, `fecha_fin`, `id_inmueble`, `id_inquilino`, `fecha_fin_original`, `creado_por`, `terminado_por`, `activo`) VALUES
-(12, 10, '2025-05-17', '2025-06-17', 2, 5, '2025-06-17 00:00:00', 1, NULL, 1),
-(13, 80085, '2025-05-08', '2025-12-08', 7, 5, '2025-12-08 00:00:00', 1, NULL, 1);
+(16, 80085, '2025-05-09', '2025-07-09', 7, 9, '2025-12-09 00:00:00', 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -77,8 +76,7 @@ INSERT INTO `inmueble` (`id_inmueble`, `id_propietario`, `direccion`, `uso`, `ti
 (1, 4, 'calle siemprevivatest edit', 'residencial', 'casa', 12, '50', 10, 'suspendido', 1, NULL),
 (2, 4, 'direccionPrueba', 'comercial', 'local', 1, '1;1', 10.15, 'disponible', 1, NULL),
 (3, 6, 'testcrearinmueble', 'otro', 'departamento', 80085, '080085', 80085, 'disponible', 1, '/uploads/638823169200886744.png'),
-(7, 13, 'Literally a mountain', 'otro', 'otro', 0, '38;-80', 80085, 'disponible', 1, '/uploads/638823191926381278.png'),
-(6, 13, 'Test imagen', 'residencial', 'departamento', 89, '78;94', 80085, 'disponible', 1, '/uploads/638823186587446053.png');
+(7, 13, 'Literally a mountain', 'otro', 'otro', 0, '38;-80', 80085, 'disponible', 1, '/uploads/638823191926381278.png');
 
 -- --------------------------------------------------------
 
@@ -122,21 +120,28 @@ CREATE TABLE `pago` (
   `monto` double NOT NULL,
   `fecha` date NOT NULL,
   `observacion` varchar(250) DEFAULT NULL,
-  `estado` enum('completado','en proceso','fallo','anulado') DEFAULT 'en proceso'
+  `estado` enum('completado','en proceso','fallo','anulado') DEFAULT 'en proceso',
+  `creado_por` int(11) NOT NULL,
+  `terminado_por` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `pago`
 --
 
-INSERT INTO `pago` (`id_pago`, `id_contrato`, `monto`, `fecha`, `observacion`, `estado`) VALUES
-(9, 13, 80085, '2025-06-08', 'Pago 6', 'en proceso'),
-(10, 13, 80085, '2025-07-08', 'Pago 7', 'en proceso'),
-(8, 13, 80085, '2025-05-08', 'Pago 5', 'en proceso'),
-(11, 13, 80085, '2025-08-08', 'Pago 8', 'en proceso'),
-(12, 13, 80085, '2025-09-08', 'Pago 9', 'en proceso'),
-(13, 13, 80085, '2025-10-08', 'Pago 10', 'en proceso'),
-(14, 13, 80085, '2025-11-08', 'Pago 11', 'en proceso');
+INSERT INTO `pago` (`id_pago`, `id_contrato`, `monto`, `fecha`, `observacion`, `estado`, `creado_por`, `terminado_por`) VALUES
+(22, 16, 80085, '2025-11-09', 'Pago 11', 'anulado', 0, NULL),
+(21, 16, 80085, '2025-10-09', 'Pago 10', 'anulado', 0, NULL),
+(20, 16, 80085, '2025-09-09', 'Pago 9', 'anulado', 0, NULL),
+(19, 16, 80085, '2025-08-09', 'Pago 8', 'anulado', 0, NULL),
+(18, 16, 80085, '2025-07-09', 'Pago 7', 'en proceso', 0, NULL),
+(17, 16, 80085, '2025-06-09', 'Pago 6', 'en proceso', 0, NULL),
+(16, 16, 80085, '2025-05-09', 'Pago 5', 'anulado', 0, 1),
+(23, 16, 160170, '2025-05-09', 'Multa por cancelacion', 'en proceso', 0, NULL),
+(24, 16, 15000, '2025-05-24', 'test pago quien lo creo', 'completado', 2, NULL),
+(25, 16, 0, '2025-05-24', NULL, 'anulado', 2, 1),
+(26, 16, 651651, '2025-05-28', 'test pago modal', 'completado', 1, NULL),
+(27, 16, 1212, '2025-05-21', 'apgo modal 2.0', 'completado', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -163,7 +168,7 @@ INSERT INTO `propietario` (`id_propietario`, `dni`, `nombre`, `apellido`, `telef
 (6, '44359371', 'ricardo', 'vizcay', '266469420', NULL, 1),
 (7, 'dninuevo', 'nombrenuevo', 'apellidonuevo', 'telefononuevo', NULL, 1),
 (8, '873214', 'Fabrizio', 'Arias', '6546874321', NULL, 1),
-(9, 'nuevo propietrario', 'nuevo propietrario2', 'nuevo propietrario3', 'nuevo propietrario4', NULL, 1),
+(9, 'nuevo propietrario', 'nuevo propietrario2', 'nuevo propietrario3', 'nuevo propietrario4', NULL, 0),
 (10, 'propietario', 'propietario2', 'propietario3', 'propietario4', NULL, 1),
 (11, 'dninuevo', 'dninuevo1', 'dninuevo2', 'dninuevo3', 'yeahbaby@yeah.com', 1),
 (12, 'dninuevo', 'pablo', 'apellidoedit', '498433', 'yeahbaby@yeah.com', 1),
@@ -179,16 +184,19 @@ INSERT INTO `propietario` (`id_propietario`, `dni`, `nombre`, `apellido`, `telef
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL,
   `nombre` varchar(250) NOT NULL,
-  `contraseña` varchar(250) NOT NULL,
-  `rol` enum('administrador','empleado') NOT NULL
+  `contrasena` varchar(250) NOT NULL,
+  `rol` enum('administrador','empleado') NOT NULL,
+  `imagen` varchar(500) DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `nombre`, `contraseña`, `rol`) VALUES
-(1, 'pepe', 'password', 'administrador');
+INSERT INTO `usuario` (`id_usuario`, `nombre`, `contrasena`, `rol`, `imagen`, `activo`) VALUES
+(1, 'pepe', '5hqBl21VmvDgmqtINSRlPcfZp+Hy0Jh06/rZPco2rYE=', 'administrador', '/uploads/638833658354288170.png', 1),
+(2, 'The_fabri_twitch', 'lXaFRl3W4TvMKDV6uubHRSK3p25ixD5MhImsXC7fs1A=', 'empleado', '/uploads/638833674994349034.png', 1);
 
 --
 -- Indexes for dumped tables
@@ -242,7 +250,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT for table `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `inmueble`
 --
@@ -257,7 +265,7 @@ ALTER TABLE `inquilino`
 -- AUTO_INCREMENT for table `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `propietario`
 --
@@ -267,7 +275,7 @@ ALTER TABLE `propietario`
 -- AUTO_INCREMENT for table `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;COMMIT;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
