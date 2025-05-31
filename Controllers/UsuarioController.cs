@@ -138,6 +138,20 @@ namespace StiegerInmobiliaria.Controllers
 
         }
 
+        [Authorize(Policy = "administrador")]
+        public ActionResult Eliminar(int id)
+        {
+            try
+            {
+                repositorio.Baja(id);
+                return Json(new { success = true, mensaje = "Usuario eliminado exitosamente." });
+            }
+            catch (System.Exception ex)
+            {
+                return Json(new { success = false, mensaje = "Ah ocurrido un error al eliminar." });
+                throw;
+            }
+        }
         public ActionResult Editar(UsuarioModel usr)
         {
             int idUser = Convert.ToInt32(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -179,7 +193,11 @@ namespace StiegerInmobiliaria.Controllers
             return RedirectToAction("Perfil", new { id = og.Id_usuario });
         }
 
+        /*public ActionResult EliminarImagen(){
 
+            return RedirectToAction();
+        }*/
+        
         private string Hash(UsuarioModel usuario)
         {
             string hasheo = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -216,6 +234,7 @@ namespace StiegerInmobiliaria.Controllers
 
             return url;
         }
+
 
 
         private int EliminarArchivoServer(string link)
